@@ -6,7 +6,7 @@ import * as socketIo from 'socket.io';
 import IServer from './interfaces/server';
 
 export default class Server implements IServer {
-	private readonly PORT:number = 4000;
+	private readonly PORT:number = 5000;
 	private app: express.Application;
 	private server: HttpServer;
 	private io: SocketIO.Server;

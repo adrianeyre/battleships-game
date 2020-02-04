@@ -1,4 +1,6 @@
 import React from 'react';
+import socketIOClient from "socket.io-client";
+
 import Game from '../../classes/game';
 import ISprite from '../../classes/interfaces/sprite';
 import IBattleShipsProps from './interfaces/battle-ships-props';
@@ -14,6 +16,7 @@ export default class BattleShips extends React.Component<IBattleShipsProps, IBat
 	private SPRITE_BLOCKS_WIDTH: number = 20;
 	private SPRITE_BLOCKS_HEIGHT: number = 20;
 	private container: any;
+	private END_POINT: string = 'http://localhost:5000';
 
 	constructor(props: IBattleShipsProps) {
 		super(props);
@@ -26,6 +29,8 @@ export default class BattleShips extends React.Component<IBattleShipsProps, IBat
 			containerMargin: 0,
 			timerInterval: 0,
 			game: new Game(this.props),
+			messages: [],
+			chatMessage: '',
 		}
 
 		this.handleKeyDown = this.handleKeyDown.bind(this);
@@ -36,6 +41,11 @@ export default class BattleShips extends React.Component<IBattleShipsProps, IBat
 		this.updatePlayerArea();
 		window.addEventListener('resize', this.updatePlayerArea);
 		window.addEventListener('keydown', this.handleKeyDown);
+
+		const socket = socketIOClient(this.END_POINT);
+		await this.setState(() => ({ socket }));
+
+		this.state.socket.on("message", (message: any) => this.handleMessage(message));
 	}
 
 	public async componentWillUnmount() {
@@ -52,6 +62,18 @@ export default class BattleShips extends React.Component<IBattleShipsProps, IBat
 			{ this.state.game.isGameInPlay && <div className="play-area">
 				{ this.state.game.sprites?.map((sprite: ISprite) => <DrawSprite key={ sprite.key } sprite={ sprite } height={ this.state.spriteHeight } width={ this.state.spriteWidth } containerWidth={ this.state.containerWidth } />) }
 			</div> }
+
+			<div>
+				<input type="text" name="chat" value={ this.state.chatMessage } onChange={ this.handleChatMessage } />
+				<input type="submit" value="Send Message" onClick={ this.handleSendMessage }/>
+			</div>
+
+			<ul>
+				{ this.state.messages.map((message: string, messageIndex: number) => 
+					<li key={ `message-${ messageIndex }`}>{ message }</li>
+					
+				)}
+			</ul>
 
 			{ this.state.game.isGameInPlay && this.state.containerWidth < 600 && <div style={ this.styleGameButtons() }><MobileButtons handleMobileButton={ this.handleMobileButton }/></div> }
 		</div>
@@ -128,4 +150,23 @@ export default class BattleShips extends React.Component<IBattleShipsProps, IBat
 		this.setState(prev => ({ game }));
 	}
 
+	private handleChatMessage = (event: any) => {
+		const chatMessage = event.target.value;
+
+		this.setState(() => ({ chatMessage }))
+	}
+
+	private handleSendMessage = async () => {
+		if (!this.state.socket) return;
+
+		this.state.socket.emit("message", this.state.chatMessage);
+		await this.setState(() => ({ chatMessage: '' }));
+	}
+
+	private handleMessage = async (message: string) => {
+		const messages = this.state.messages;
+		messages.push(message);
+
+		await this.setState(() => ({ messages }));
+	}
 }
