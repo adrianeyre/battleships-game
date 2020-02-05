@@ -1,10 +1,10 @@
 import PlayerResultEnum from '../enums/player-result-enum';
 import IPlayer from './player';
-import ISprite from './sprite';
+import IBoard from './board';
 
 export default interface IGame {
 	player: IPlayer;
-	sprites: ISprite[];
+	board: IBoard;
 	timer: any;
 	timerInterval: number;
 	isGameInPlay: boolean;

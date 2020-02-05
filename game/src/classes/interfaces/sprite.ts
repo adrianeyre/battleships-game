@@ -1,5 +1,4 @@
 import SpriteTypeEnum from '../enums/sprite-type-enum';
-import ImageEnum from 'classes/enums/image-enum';
 
 export default interface ISprite {
 	key: string;
@@ -7,6 +6,6 @@ export default interface ISprite {
 	x: number;
 	y: number;
 	zIndex: number
-	image: ImageEnum;
+	image: string;
 	type: SpriteTypeEnum;
 }

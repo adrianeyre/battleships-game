@@ -7,14 +7,14 @@ import IBattleShipsProps from './interfaces/battle-ships-props';
 import IBattleShipsState from './interfaces/battle-ships-state';
 import DrawSprite from '../draw-sprite/draw-sprite';
 import InfoBoard from '../info-board/info-board';
-import MobileButtons from '../mobile-buttons/mobile-buttons';
+import GameStatus from '../game-status/game-status';
 
 import './styles/battle-ships.scss';
 import PlayerResultEnum from 'classes/enums/player-result-enum';
 
 export default class BattleShips extends React.Component<IBattleShipsProps, IBattleShipsState> {
-	private SPRITE_BLOCKS_WIDTH: number = 20;
-	private SPRITE_BLOCKS_HEIGHT: number = 20;
+	private SPRITE_BLOCKS_WIDTH: number = 21;
+	private SPRITE_BLOCKS_HEIGHT: number = 21;
 	private container: any;
 	private END_POINT: string = 'http://localhost:5000';
 
@@ -60,35 +60,18 @@ export default class BattleShips extends React.Component<IBattleShipsProps, IBat
 			{ !this.state.game.isGameInPlay && <InfoBoard gameOver={ !this.state.game.player.isAlive } startGame={ this.startGame } score={ this.state.game.player.score } containerHeight={ this.state.containerHeight } /> }
 
 			{ this.state.game.isGameInPlay && <div className="play-area">
-				{ this.state.game.sprites?.map((sprite: ISprite) => <DrawSprite key={ sprite.key } sprite={ sprite } height={ this.state.spriteHeight } width={ this.state.spriteWidth } containerWidth={ this.state.containerWidth } />) }
+				{ this.state.game.board.sprites?.map((sprite: ISprite) => <DrawSprite key={ sprite.key } sprite={ sprite } height={ this.state.spriteHeight } width={ this.state.spriteWidth } containerWidth={ this.state.containerWidth } />) }
 			</div> }
 
-			<div>
-				<input type="text" name="chat" value={ this.state.chatMessage } onChange={ this.handleChatMessage } />
-				<input type="submit" value="Send Message" onClick={ this.handleSendMessage }/>
-			</div>
-
-			<ul>
-				{ this.state.messages.map((message: string, messageIndex: number) => 
-					<li key={ `message-${ messageIndex }`}>{ message }</li>
-					
-				)}
-			</ul>
-
-			{ this.state.game.isGameInPlay && this.state.containerWidth < 600 && <div style={ this.styleGameButtons() }><MobileButtons handleMobileButton={ this.handleMobileButton }/></div> }
+			{ this.state.game.isGameInPlay && <div>
+				<GameStatus messages={ this.state.messages } handleSendMessage={ this.handleSendMessage } containerWidth={ this.state.containerWidth} spriteWidth={ this.state.spriteWidth } ></GameStatus>
+			</div> }
 		</div>
 	}
 
 	private styleContainer = () => ({
 		maxWidth: `${ this.state.containerHeight }px`,
 		marginLeft: `${ this.state.containerMargin }px`
-	})
-
-	private styleGameButtons = () => ({
-		position: 'absolute' as 'absolute',
-		width: `100%`,
-		maxWidth: `${ this.state.containerHeight }px`,
-		top: `${ this.state.containerWidth / 100 * 110 }px`,
 	})
 
 	private startGame = async (): Promise<void> => {
@@ -102,7 +85,7 @@ export default class BattleShips extends React.Component<IBattleShipsProps, IBat
 	private updatePlayerArea = (): void => {
 		const containerHeight = this.container && this.container.getBoundingClientRect().height;
 		let containerWidth = this.container && this.container.getBoundingClientRect().width;
-		const containerMargin = (window.innerWidth - containerHeight) / 2;
+		const containerMargin = (window.innerWidth - containerWidth) / 2;
 		if (containerWidth > containerHeight) containerWidth = containerHeight;
 		const spriteWidth = containerWidth / this.SPRITE_BLOCKS_WIDTH;
 		const spriteHeight = ((containerWidth / 100) * 100 ) / this.SPRITE_BLOCKS_HEIGHT;
@@ -128,8 +111,6 @@ export default class BattleShips extends React.Component<IBattleShipsProps, IBat
 		await this.handleInput(event.keyCode);
 	}
 
-	private handleMobileButton = async (direction: PlayerResultEnum): Promise<void> => await this.handleInput(direction);
-
 	private startTimer = async (): Promise<void> => {
 		const timerInterval = this.state.game.timerInterval;
 		const timer = setInterval(this.myTimer, this.state.game.timerInterval);
@@ -150,22 +131,16 @@ export default class BattleShips extends React.Component<IBattleShipsProps, IBat
 		this.setState(prev => ({ game }));
 	}
 
-	private handleChatMessage = (event: any) => {
-		const chatMessage = event.target.value;
-
-		this.setState(() => ({ chatMessage }))
-	}
-
-	private handleSendMessage = async () => {
+	private handleSendMessage = async (message: string) => {
 		if (!this.state.socket) return;
 
-		this.state.socket.emit("message", this.state.chatMessage);
-		await this.setState(() => ({ chatMessage: '' }));
+		this.state.socket.emit("message", message);
+		
 	}
 
 	private handleMessage = async (message: string) => {
 		const messages = this.state.messages;
-		messages.push(message);
+		messages.unshift(message);
 
 		await this.setState(() => ({ messages }));
 	}

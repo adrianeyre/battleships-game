@@ -1,0 +1,71 @@
+.game-status {
+	color: black;
+	position: relative;
+
+	.status-title {
+		padding: 1em 0 0.5em 0;
+		text-align: center;
+	}
+
+	.status {
+		position: absolute;
+		height: 87%;
+		width: 100%;
+		overflow-y: auto;
+		font-size: 0.5em;
+
+		.status-message {
+			padding: 0.5em;
+		}
+	}
+
+	.chat-input {
+		position: absolute;
+		width: 100%;
+		bottom: 5px;
+		padding-bottom: 0.2em;
+		padding-left: 0.5em;
+
+		input[type=text] {
+			font-family: 'Press Start 2P', cursive;
+			font-size: 0.5em;
+			height: 2em;
+			width: 80%;
+		}
+
+		input[type=submit] {
+			font-family: 'Press Start 2P', cursive;
+			font-size: 0.5em;
+			padding: 0.5em;
+			width: 15%;
+		}
+	}
+}
+
+@media (max-width: 600px) {
+	.game-status {
+		font-size: 0.8em;
+
+		input[type=text] {
+			font-size: 0.8em;
+		}
+
+		input[type=submit] {
+			font-size: 0.8em;
+		}
+	}
+}
+
+@media (max-width: 400px) {
+	.game-status {
+		font-size: 0.5em;
+
+		input[type=text] {
+			font-size: 0.5em;
+		}
+
+		input[type=submit] {
+			font-size: 0.5em;
+		}
+	}
+}

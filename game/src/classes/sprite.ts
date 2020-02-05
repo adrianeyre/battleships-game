@@ -1,7 +1,8 @@
 import ISpriteProps from './interfaces/sprite-props';
 import ISprite from './interfaces/sprite';
 import SpriteTypeEnum from './enums/sprite-type-enum';
-import ImageEnum from './enums/image-enum';
+
+import blank from '../images/block-00.png';
 
 export default class Sprite implements ISprite {
 	public key: string;
@@ -9,10 +10,13 @@ export default class Sprite implements ISprite {
 	public x: number;
 	public y: number;
 	public zIndex: number;
-	public image: ImageEnum;
+	public image: string;
 	public type: SpriteTypeEnum;
 
-	readonly Z_INDEX: number = 5000;
+	private readonly Z_INDEX: number = 5000;
+	private readonly images = {
+		blank
+	}
 
 	constructor(config: ISpriteProps) {
 		this.key = config.key;
@@ -20,7 +24,7 @@ export default class Sprite implements ISprite {
 		this.x = config.x;
 		this.y = config.y;
 		this.zIndex = this.Z_INDEX;
-		this.image = ImageEnum.BLANK
+		this.image = this.images[config.image];
 		this.type = config.type;
 	}
 }

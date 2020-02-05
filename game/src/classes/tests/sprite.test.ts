@@ -13,8 +13,8 @@ describe('Sprite', () => {
 			visable: true,
 			x: 10,
 			y: 10,
-			image: ImageEnum.SPRITE01,
-			type: SpriteTypeEnum.SPRITE01,
+			image: ImageEnum.BLANK,
+			type: SpriteTypeEnum.BLANK,
 		}
 	})
 
@@ -26,6 +26,6 @@ describe('Sprite', () => {
 		expect(sprite.x).toEqual(10);
 		expect(sprite.y).toEqual(10);
 		expect(sprite.zIndex).toEqual(5000);
-		expect(sprite.type).toEqual(SpriteTypeEnum.SPRITE01);
+		expect(sprite.type).toEqual(SpriteTypeEnum.BLANK);
 	});
 });

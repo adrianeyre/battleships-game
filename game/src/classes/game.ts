@@ -4,13 +4,15 @@ import PlayerResultEnum from './enums/player-result-enum';
 import IBattleShipsProps from '../components/battle-ships/interfaces/battle-ships-props';
 import Player from './player';
 import IPlayer from './interfaces/player';
+import IBoard from './interfaces/board';
+import Board from './board';
 
 export default class Game implements IGame {
 	public timer: any
 	public timerInterval: number;
 	public isGameInPlay: boolean;
 	public player: IPlayer;
-	public sprites: ISprite[];
+	public board: IBoard;
 
 	readonly defaultTimerInterval: number = 1000;
 	
@@ -18,7 +20,7 @@ export default class Game implements IGame {
 		this.isGameInPlay = false;
 		this.timerInterval = this.defaultTimerInterval;
 		this.player = new Player();
-		this.sprites = [];
+		this.board = new Board();
 	}
 
 	public handleInput = (playerResult: PlayerResultEnum, sprite?: ISprite): void => {

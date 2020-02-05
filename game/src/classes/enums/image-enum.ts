@@ -1,5 +1,5 @@
 enum ImageEnum {
-	BLANK = '',
+	BLANK = 'blank',
 }
 
 export default ImageEnum;
