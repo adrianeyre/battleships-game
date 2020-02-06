@@ -5,4 +5,7 @@ export default interface IDrawSpriteProps {
 	height: number;
 	width: number;
 	containerWidth: number;
+	onMouseOver(key: string): void;
+	onClick(key: string): void;
+	onContextMenu(key: string): void;
 }

@@ -1,8 +1,10 @@
 $info-board-background: white;
+$info-board-text-colour: black;
 
 .info-board {
 	position: absolute;
-	background-color: $info-board-background;;
+	background-color: $info-board-background;
+	color: $info-board-text-colour;
 	opacity: 0.9;
 	z-index: 10000;
 	margin-top: 5%;

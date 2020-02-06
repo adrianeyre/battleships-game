@@ -4,6 +4,7 @@ import * as express from 'express';
 import * as socketIo from 'socket.io';
 
 import IServer from './interfaces/server';
+import IData from './interfaces/data';
 
 export default class Server implements IServer {
 	private readonly PORT:number = 5000;
@@ -29,9 +30,13 @@ export default class Server implements IServer {
 		this.io.on('connect', (socket: any) => {
 			console.log(`Connected client on port ${ this.port }`);
 
-			socket.on('message', (data: any) => {
+			socket.on('battle-ships-data', (data: IData) => {
 				console.log(`data: ${ JSON.stringify(data) }`);
-				this.io.emit('message', data);
+				this.io.emit('battle-ships-data', {
+					datetime: Date.now(),
+					type: data.type,
+					message: data.message,
+				});
 			});
 
 			socket.on('disconnect', () => {

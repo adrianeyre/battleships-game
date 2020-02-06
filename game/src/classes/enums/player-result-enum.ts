@@ -1,4 +1,10 @@
 enum PlayerResultEnum {
+	ERROR = -1,
+	SAFE = 0,
+	HOVER = 1,
+	SELECT = 2,
+	RIGHT_SELECT = 3,
+	DONE_EDITING = 4,
 	ENTER = 13,
 	SPACE_BAR = 32,
 	ARROW_RIGHT = 39,

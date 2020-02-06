@@ -1,13 +1,13 @@
 import PlayerResultEnum from '../enums/player-result-enum';
 import IPlayer from './player';
-import IBoard from './board';
+import IData from '../../services/interfaces/data';
 
 export default interface IGame {
-	player: IPlayer;
-	board: IBoard;
+	players: IPlayer[];
+	data: IData;
 	timer: any;
 	timerInterval: number;
 	isGameInPlay: boolean;
-	handleInput(playerResult: PlayerResultEnum): void;
+	handleInput(playerResult: PlayerResultEnum, key?: string): void;
 	handleTimer(): void;
 }

@@ -1,8 +1,6 @@
-enum DirectEnum {
-	UP = 0,
-	RIGHT = 1,
-	DOWN = 2,
-	LEFT = 3,
+enum DirectionEnum {
+	HORIZONTAL = 0,
+	VERTICAL = 1,
 }
 
-export default DirectEnum;
+export default DirectionEnum;

@@ -15,6 +15,9 @@ export default class DrawSprite extends React.Component<IDrawSpriteProps, {}> {
 				height={ this.props.height }
 				width={ this.props.width }
 				alt="sprite"
+				onMouseOver={ this.onMouseOver }
+				onClick={ this.onClick }
+				onContextMenu={ this.onContextMenu }
 			/>
 		</div>
 	}
@@ -27,4 +30,8 @@ export default class DrawSprite extends React.Component<IDrawSpriteProps, {}> {
 		transform: `translate3d(${ (x - 1) * this.props.width + this.offsetWidth }px, ${ this.offsetHeight + (y - 1) * this.props.height }px, 0)`,
 		zIndex: this.props.sprite.zIndex,
 	})
+
+	private onMouseOver = (): void => this.props.onMouseOver(this.props.sprite.key);
+	private onClick = (): void => this.props.onClick(this.props.sprite.key);
+	private onContextMenu = (): void => this.props.onContextMenu(this.props.sprite.key);
 }
