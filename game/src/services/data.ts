@@ -8,7 +8,7 @@ export default class Data implements IData {
 	public messages: string[];
 
 	private socket: any;
-	private readonly END_POINT: string = 'http://localhost:5000';
+	private readonly END_POINT: string = 'http://localhost:4000';
 
 	constructor() {
 		this.messages = [];
@@ -19,6 +19,6 @@ export default class Data implements IData {
 	public sendMessage = (message: IMessage): number => this.socket.emit("battle-ships-data", message);
 
 	private handleMessage = (message: IMessage): void => {
-		this.messages.unshift(`[${ moment(message.dateTime).format("MM/DD/YYYY HH:mm") }] ${ message.message }`);
+		this.messages.unshift(`[${ moment(message.dateTime).format("HH:mm") }] ${ message.message }`);
 	}
 }

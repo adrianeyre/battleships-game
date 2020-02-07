@@ -46,9 +46,27 @@ $info-board-text-colour: black;
 		}
 	}
 
+	.player-input {
+		margin-bottom: 2em;
+		text-align: center;
+
+		input[type=text] {
+			font-family: 'Press Start 2P', cursive;
+			height: 2em;
+		}
+	}
+
 	.button-area {
 		margin-bottom: 2em;
 		text-align: center;
+
+		button.disabled {
+			background-color: grey;
+		}
+
+		button.disabled:hover {
+			color: white;
+		}
 	}
 }
 

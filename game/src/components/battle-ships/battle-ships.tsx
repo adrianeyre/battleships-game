@@ -27,7 +27,7 @@ export default class BattleShips extends React.Component<IBattleShipsProps, IBat
 			containerHeight: 800,
 			containerMargin: 0,
 			timerInterval: 0,
-			game: new Game(this.props),
+			// game: new Game(this.props),
 			messages: [],
 			chatMessage: '',
 		}
@@ -51,17 +51,20 @@ export default class BattleShips extends React.Component<IBattleShipsProps, IBat
 	public render() {
 		return <div className="battle-ships-play-container" ref={(d) => { this.container = d }} style={ this.styleContainer() }>
 
-			{ !this.state.game.isGameInPlay && <InfoBoard gameOver={ false } startGame={ this.startGame } score={ 0 } containerHeight={ this.state.containerHeight } /> }
+			{ (!this.state.game || !this.state.game.isGameInPlay) && <InfoBoard gameOver={ false } startGame={ this.startGame } score={ 0 } containerHeight={ this.state.containerHeight } /> }
 
-			{ this.state.game.isGameInPlay && <div className="play-area">
-				{ this.state.game.players.map((player: IPlayer) =>
-					player.sprites.map((sprite: ISprite) => <DrawSprite key={ sprite.key } onMouseOver={ this.onMouseOver } onContextMenu={ this.onContextMenu }onClick={ this.onClick } sprite={ sprite } height={ this.state.spriteHeight } width={ this.state.spriteWidth } containerWidth={ this.state.containerWidth } />)
-				)}
-			</div> }
+			{ this.state.game && <div>
+				<div className="play-area">
+					{ this.state.game.players.map((player: IPlayer) =>
+						player.sprites.map((sprite: ISprite) => <DrawSprite key={ sprite.key } onMouseOver={ this.onMouseOver } onContextMenu={ this.onContextMenu }onClick={ this.onClick } sprite={ sprite } height={ this.state.spriteHeight } width={ this.state.spriteWidth } containerWidth={ this.state.containerWidth } />)
+					)}
+				</div>
 
-			{ this.state.game.isGameInPlay && <div>
-				<GameStatus messages={ this.state.game.data.messages } handleSendMessage={ this.handleSendMessage } containerWidth={ this.state.containerWidth} spriteWidth={ this.state.spriteWidth } ></GameStatus>
+				<div>
+					<GameStatus messages={ this.state.game.data.messages } handleSendMessage={ this.handleSendMessage } containerWidth={ this.state.containerWidth} spriteWidth={ this.state.spriteWidth } ></GameStatus>
+				</div>
 			</div> }
+			
 		</div>
 	}
 
@@ -70,8 +73,9 @@ export default class BattleShips extends React.Component<IBattleShipsProps, IBat
 		marginLeft: `${ this.state.containerMargin }px`
 	})
 
-	private startGame = async (): Promise<void> => {
-		const game = new Game(this.props);
+	private startGame = async (playerName: string): Promise<void> => {
+		const props = { ...this.props, playerName}
+		const game = new Game(props);
 		game.isGameInPlay = true;
 		await this.startTimer();
 		await this.setState(() => ({ game }));
@@ -89,6 +93,8 @@ export default class BattleShips extends React.Component<IBattleShipsProps, IBat
 	}
 
 	private handleInput = async (input: PlayerResultEnum, key?: string): Promise<void> => {
+		if (!this.state.game) return;
+
 		const game = this.state.game;
 		game.handleInput(input, key);
 
@@ -102,12 +108,13 @@ export default class BattleShips extends React.Component<IBattleShipsProps, IBat
 	}
 
 	private handleKeyDown = async (event: any): Promise<void> => {
-		if (!this.state.game.isGameInPlay) return;
+		if (!this.state.game || !this.state.game.isGameInPlay) return;
 
 		await this.handleInput(event.keyCode);
 	}
 
 	private startTimer = async (): Promise<void> => {
+		if (!this.state.game) return;
 		const timerInterval = this.state.game.timerInterval;
 		const timer = setInterval(this.myTimer, this.state.game.timerInterval);
 
@@ -121,14 +128,19 @@ export default class BattleShips extends React.Component<IBattleShipsProps, IBat
 	}
 
 	private myTimer = (): void => {
+		if (!this.state.game) return;
 		const game = this.state.game
 		game.handleTimer();
 
 		this.setState(prev => ({ game }));
 	}
 
-	private handleSendMessage = async (message: string) => this.state.game.data.sendMessage({ type: 'message', message });
 	private onMouseOver = async (key: string): Promise<void> => this.handleInput(PlayerResultEnum.HOVER, key)
 	private onClick = async (key: string): Promise<void> => this.handleInput(PlayerResultEnum.SELECT, key);
 	private onContextMenu = async (key: string): Promise<void> => this.handleInput(PlayerResultEnum.RIGHT_SELECT, key);
+
+	private handleSendMessage = async (message: string) => {
+		if (!this.state.game) return;
+		this.state.game.sendMessage(message);
+	}
 }

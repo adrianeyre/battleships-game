@@ -4,6 +4,7 @@ export default interface IMessage {
 	dateTime?: number;
 	action: MessageActionEnum
 	id: string;
+	socketId: string;
 	name: string;
 	message: string;
 }

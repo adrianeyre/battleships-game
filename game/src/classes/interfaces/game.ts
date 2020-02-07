@@ -10,4 +10,5 @@ export default interface IGame {
 	isGameInPlay: boolean;
 	handleInput(playerResult: PlayerResultEnum, key?: string): void;
 	handleTimer(): void;
+	sendMessage(message: string): void;
 }

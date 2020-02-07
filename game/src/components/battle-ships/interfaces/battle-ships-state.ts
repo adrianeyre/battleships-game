@@ -1,7 +1,7 @@
 import IGame from '../../../classes/interfaces/game';
 
 export default interface IBattleShipsState {
-	game: IGame;
+	game?: IGame;
 	socket?: any;
 	chatMessage: string;
 	messages: string[];

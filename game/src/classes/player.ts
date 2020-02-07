@@ -1,3 +1,5 @@
+import { v4 as uuid } from 'uuid';
+
 import IPlayer from './interfaces/player';
 import IPlayerConfig from './interfaces/player-config'
 import ISprite from './interfaces/sprite';
@@ -12,6 +14,8 @@ import * as matrixData from './data/matrix';
 
 export default class Player implements IPlayer {
 	public key: string;
+	public id: string;
+	public name: string;
 	public score: number;
 	public isAlive: boolean;
 	public sprites: ISprite[];
@@ -26,6 +30,8 @@ export default class Player implements IPlayer {
 
 	constructor(config: IPlayerConfig) {
 		this.key = config.key;
+		this.id = uuid();
+		this.name = config.name || config.key;
 		this.score = 0;
 		this.isAlive = true;
 		this.sprites = [];

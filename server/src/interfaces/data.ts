@@ -1,5 +1,6 @@
+import IMessage from './message';
+
 export default interface IData {
-	dateTime?: number;
-	type: 'message' | 'action';
-	message?: string;
+	messages: string[];
+	sendMessage(message: IMessage): void;
 }

@@ -4,6 +4,8 @@ import PlayerResultEnum from '../enums/player-result-enum';
 
 export default interface IPlayer {
 	key: string;
+	id: string;
+	name: string;
 	sprites: ISprite[];
 	board: string[][];
 	direction: DirectionEnum;

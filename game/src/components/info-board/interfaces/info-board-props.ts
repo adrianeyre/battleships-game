@@ -2,5 +2,5 @@ export default interface IInfoBoardProps {
 	gameOver: boolean;
 	score: number;
 	containerHeight: number;
-	startGame(): void;
+	startGame(playerName?: string): void;
 }
