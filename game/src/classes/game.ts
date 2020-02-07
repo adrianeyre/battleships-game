@@ -15,6 +15,7 @@ export default class Game implements IGame {
 	public players: IPlayer[];
 
 	private playerIndex: number = 0;
+	private opponentIndex: number = 1;
 	readonly defaultTimerInterval: number = 1000;
 	
 	constructor(config: IBattleShipsProps) {
@@ -44,20 +45,13 @@ export default class Game implements IGame {
 				this.rotateBlock(key); break;
 			case PlayerResultEnum.DONE_EDITING:
 				this.playerDoneEditing(); break;
+			case PlayerResultEnum.FIRE:
+				this.fire(key); break;
 		}
 	}
 
 	public handleTimer = (): void => {
 
-	}
-
-	public sendMessage = (message: string): void => {
-		this.data.sendMessage({
-			action: MessageActionEnum.MESSAGE,
-			id: this.players[this.playerIndex].id,
-			name: this.players[this.playerIndex].name,
-			message: `[${ this.players[this.playerIndex].name }] ${ message }`,
-		});
 	}
 
 	private updateBlock = (key?: string): void => {
@@ -72,12 +66,24 @@ export default class Game implements IGame {
 		if (key && this.players[this.playerIndex].edit) this.players[this.playerIndex].rotate(key);
 	}
 
-	private playerDoneEditing = (): void => {
-		this.data.sendMessage({
-			action: MessageActionEnum.SETUP_COMPLETE,
-			id: this.players[this.playerIndex].id,
-			name: this.players[this.playerIndex].name,
-			message: `${ this.players[this.playerIndex].name } has finished setting their board up`,
-		});
+	private fire = (key?: string): void => {
+		if (!key) return;
+
+		const sprite = this.players[this.opponentIndex].findSpriteByKey(key);
+		if (!sprite) return;
+
+		this.sendMessageToService(MessageActionEnum.FIRE, this.players[this.playerIndex], `[${ this.players[this.playerIndex].name }] fire x: ${ sprite.xPos }, y: ${ sprite.yPos }`, sprite.xPos, sprite.yPos)
 	}
+
+	private playerDoneEditing = (): void => this.sendMessageToService(MessageActionEnum.SETUP_COMPLETE, this.players[this.playerIndex], `${ this.players[this.playerIndex].name } has finished setting their board up`)
+	public sendMessage = (message: string): void => this.sendMessageToService(MessageActionEnum.MESSAGE, this.players[this.playerIndex], `[${ this.players[this.playerIndex].name }] ${ message }`);
+
+	private sendMessageToService = (action: MessageActionEnum, player: IPlayer, message: string, x?: number, y?: number): void => this.data.sendMessage({
+		action,
+		id: player.id,
+		name: player.name,
+		message,
+		x,
+		y,
+	});
 }

@@ -21,6 +21,8 @@ export default class Sprite implements ISprite {
 	public visable: boolean;
 	public x: number;
 	public y: number;
+	public xPos: number;
+	public yPos: number;
 	public zIndex: number;
 	public image: string;
 	public type: SpriteTypeEnum;
@@ -38,6 +40,8 @@ export default class Sprite implements ISprite {
 		this.visable = config.visable;
 		this.x = config.x;
 		this.y = config.y;
+		this.xPos = config.xPos;
+		this.yPos = config.yPos;
 		this.zIndex = this.Z_INDEX;
 		this.image = this.images[config.image];
 		this.type = config.type;

@@ -5,6 +5,7 @@ enum PlayerResultEnum {
 	SELECT = 2,
 	RIGHT_SELECT = 3,
 	DONE_EDITING = 4,
+	FIRE = 5,
 	ENTER = 13,
 	SPACE_BAR = 32,
 	ARROW_RIGHT = 39,

@@ -5,6 +5,8 @@ export default interface ISprite {
 	visable: boolean;
 	x: number;
 	y: number;
+	xPos: number;
+	yPos: number;
 	zIndex: number
 	image: string;
 	type: SpriteTypeEnum;

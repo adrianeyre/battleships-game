@@ -14,4 +14,5 @@ export default interface IPlayer {
 	edit: boolean;
 	updateBlock(key: string, set: boolean): PlayerResultEnum;
 	rotate(key: string): void;
+	findSpriteByKey(key: string): ISprite | undefined;
 }

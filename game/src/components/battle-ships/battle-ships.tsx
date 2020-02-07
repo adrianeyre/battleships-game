@@ -2,7 +2,6 @@ import React from 'react';
 
 import Game from '../../classes/game';
 import ISprite from '../../classes/interfaces/sprite';
-import IPlayer from '../../classes/interfaces/player';
 import IBattleShipsProps from './interfaces/battle-ships-props';
 import IBattleShipsState from './interfaces/battle-ships-state';
 import DrawSprite from '../draw-sprite/draw-sprite';
@@ -27,7 +26,6 @@ export default class BattleShips extends React.Component<IBattleShipsProps, IBat
 			containerHeight: 800,
 			containerMargin: 0,
 			timerInterval: 0,
-			// game: new Game(this.props),
 			messages: [],
 			chatMessage: '',
 		}
@@ -55,9 +53,8 @@ export default class BattleShips extends React.Component<IBattleShipsProps, IBat
 
 			{ this.state.game && <div>
 				<div className="play-area">
-					{ this.state.game.players.map((player: IPlayer) =>
-						player.sprites.map((sprite: ISprite) => <DrawSprite key={ sprite.key } onMouseOver={ this.onMouseOver } onContextMenu={ this.onContextMenu }onClick={ this.onClick } sprite={ sprite } height={ this.state.spriteHeight } width={ this.state.spriteWidth } containerWidth={ this.state.containerWidth } />)
-					)}
+					{ this.state.game.players[0].sprites.map((sprite: ISprite) => <DrawSprite key={ sprite.key } onMouseOver={ this.onMouseOver } onContextMenu={ this.onContextMenu } onClick={ this.onClick } sprite={ sprite } height={ this.state.spriteHeight } width={ this.state.spriteWidth } containerWidth={ this.state.containerWidth } />) }
+					{ this.state.game.players[1].sprites.map((sprite: ISprite) => <DrawSprite key={ sprite.key } onClick={ this.onOpponentClick } sprite={ sprite } height={ this.state.spriteHeight } width={ this.state.spriteWidth } containerWidth={ this.state.containerWidth } />) }
 				</div>
 
 				<div>
@@ -137,6 +134,7 @@ export default class BattleShips extends React.Component<IBattleShipsProps, IBat
 
 	private onMouseOver = async (key: string): Promise<void> => this.handleInput(PlayerResultEnum.HOVER, key)
 	private onClick = async (key: string): Promise<void> => this.handleInput(PlayerResultEnum.SELECT, key);
+	private onOpponentClick = async (key: string): Promise<void> => this.handleInput(PlayerResultEnum.FIRE, key);
 	private onContextMenu = async (key: string): Promise<void> => this.handleInput(PlayerResultEnum.RIGHT_SELECT, key);
 
 	private handleSendMessage = async (message: string) => {

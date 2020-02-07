@@ -6,4 +6,6 @@ export default interface IMessage {
 	id: string;
 	name: string;
 	message: string;
+	x?: number,
+	y?: number,
 }

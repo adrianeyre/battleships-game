@@ -6,6 +6,8 @@ export default interface ISpriteProps {
 	visable: boolean;
 	x: number;
 	y: number;
+	xPos: number;
+	yPos: number;
 	image: ImageEnum;
 	type: SpriteTypeEnum;
 }

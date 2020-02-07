@@ -31,7 +31,13 @@ export default class DrawSprite extends React.Component<IDrawSpriteProps, {}> {
 		zIndex: this.props.sprite.zIndex,
 	})
 
-	private onMouseOver = (): void => this.props.onMouseOver(this.props.sprite.key);
 	private onClick = (): void => this.props.onClick(this.props.sprite.key);
-	private onContextMenu = (): void => this.props.onContextMenu(this.props.sprite.key);
+
+	private onContextMenu = (): void => {
+		if (this.props.onContextMenu) this.props.onContextMenu(this.props.sprite.key);
+	}
+
+	private onMouseOver = (): void => {
+		if (this.props.onMouseOver) this.props.onMouseOver(this.props.sprite.key);
+	}
 }

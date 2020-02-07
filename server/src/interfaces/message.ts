@@ -7,4 +7,6 @@ export default interface IMessage {
 	socketId: string;
 	name: string;
 	message: string;
+	x?: number;
+	y?: number;
 }

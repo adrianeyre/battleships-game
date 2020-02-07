@@ -96,11 +96,15 @@ export default class Player implements IPlayer {
 		this.updateBlock(key, false);
 	}
 
+	public findSpriteByKey = (key: string): ISprite | undefined =>  this.sprites.find((s: ISprite) => s.key === key);
+
 	private setBoard = (): void => {
 		this.board = [];
+		let yPos = 0;
 
 		for (let y = this.yPos; y <= this.yPos + 9; y++) {
 			const line = [];
+			yPos ++;
 
 			for (let x = 1; x <= 10; x++) {
 				line.push(ImageEnum.BLANK)
@@ -109,6 +113,8 @@ export default class Player implements IPlayer {
 					visable: true,
 					x,
 					y,
+					xPos: x,
+					yPos,
 					image: ImageEnum.BLANK,
 					type: SpriteTypeEnum.BLANK,
 				}))
@@ -118,10 +124,12 @@ export default class Player implements IPlayer {
 		}
 	}
 
+	private findSpriteByCoords = (x: number, y: number): ISprite | undefined => this.sprites.find((s: ISprite) => s.key === `${ this.key }-${ x }-${ y }`);
+
 	private refeshBoardImages = (): void => {
 		for (let y = this.yPos; y <= this.yPos + 9; y++) {
 			for (let x = 1; x <= 10; x++) {
-				const sprite = this.sprites.find((s: ISprite) => s.key === `${ this.key }-${ x }-${ y }`);
+				const sprite = this.findSpriteByCoords(x, y);
 				if (!sprite) continue;
 
 				sprite.updateImage(this.board[y-1][x-1]);
