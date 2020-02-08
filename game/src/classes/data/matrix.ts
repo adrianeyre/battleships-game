@@ -4,6 +4,7 @@ import ImageEnum from "../enums/image-enum";
 const matrixData: IMatrices[] = [
 	{
 		key: 'destroyer',
+		size: 2,
 		matrix: [
 			[[0, 0], [1, 0]],
 			[[0, 0], [0, 1]]
@@ -21,6 +22,7 @@ const matrixData: IMatrices[] = [
 	},
 	{
 		key: 'submarine',
+		size: 3,
 		matrix: [
 			[[0, 0], [1, 0], [2, 0]],
 			[[0, 0], [0, 1], [0, 2]]
@@ -38,6 +40,7 @@ const matrixData: IMatrices[] = [
 	},
 	{
 		key: 'cruiser',
+		size: 3,
 		matrix: [
 			[[0, 0], [1, 0], [2, 0]],
 			[[0, 0], [0, 1], [0, 2]]
@@ -55,6 +58,7 @@ const matrixData: IMatrices[] = [
 	},
 	{
 		key: 'battleship',
+		size: 4,
 		matrix: [
 			[[0, 0], [1, 0], [2, 0], [3, 0]],
 			[[0, 0], [0, 1], [0, 2], [0, 3]]
@@ -72,6 +76,7 @@ const matrixData: IMatrices[] = [
 	},
 	{
 		key: 'carrier',
+		size: 5,
 		matrix: [
 			[[0, 0], [1, 0], [2, 0], [3, 0], [4, 0]],
 			[[0, 0], [0, 1], [0, 2], [0, 3], [0, 4]]

@@ -1,4 +1,5 @@
 import SpriteTypeEnum from '../enums/sprite-type-enum';
+import PlayerResultEnum from '../enums/player-result-enum';
 
 export default interface ISprite {
 	key: string;
@@ -10,5 +11,10 @@ export default interface ISprite {
 	zIndex: number
 	image: string;
 	type: SpriteTypeEnum;
-	updateImage (image: string): string 
+	updateImage(image: string): string;
+	updateType(type: SpriteTypeEnum): SpriteTypeEnum;
+	isImageBlank(): boolean;
+	fire(): PlayerResultEnum;
+	hit(): void;
+	miss(): void;
 }

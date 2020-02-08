@@ -1,4 +1,5 @@
 import ISprite from './sprite';
+import IShipStatus from './ship-status';
 import DirectionEnum from '../enums/direction-enum';
 import PlayerResultEnum from '../enums/player-result-enum';
 
@@ -9,10 +10,13 @@ export default interface IPlayer {
 	sprites: ISprite[];
 	board: string[][];
 	direction: DirectionEnum;
-	score: number;
-	isAlive: boolean;
+	shipStatus: IShipStatus;
 	edit: boolean;
+	reset(): void;
 	updateBlock(key: string, set: boolean): PlayerResultEnum;
 	rotate(key: string): void;
 	findSpriteByKey(key: string): ISprite | undefined;
+	fire(x: number, y: number): PlayerResultEnum;
+	hit(x: number, y: number): void;
+	miss(x: number, y: number): void;
 }

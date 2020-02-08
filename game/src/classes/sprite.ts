@@ -15,6 +15,9 @@ import block09 from '../images/block-09.png';
 import block10 from '../images/block-10.png';
 import block11 from '../images/block-11.png';
 import block12 from '../images/block-12.png';
+import miss from '../images/block-13.png';
+import hit from '../images/block-14.png';
+import PlayerResultEnum from './enums/player-result-enum';
 
 export default class Sprite implements ISprite {
 	public key: string;
@@ -33,6 +36,7 @@ export default class Sprite implements ISprite {
 		block01, block02, block03, block04, block05,
 		block06, block07, block08, block09, block10,
 		block11, block12,
+		hit, miss,
 	}
 
 	constructor(config: ISpriteProps) {
@@ -48,4 +52,24 @@ export default class Sprite implements ISprite {
 	}
 
 	public updateImage = (image: string): string => this.image = this.images[image];
+	public updateType = (type: SpriteTypeEnum): SpriteTypeEnum => this.type = type;
+	public isImageBlank = (): boolean => this.image === this.images.blank;
+
+	public fire = (): PlayerResultEnum => {
+		if (this.image !== blank) {
+			this.image = this.images.hit;
+			return PlayerResultEnum.HIT
+		}
+
+		this.image = this.images.miss;
+		return PlayerResultEnum.MISS;
+	}
+
+	public hit = () => {
+		if (this.image === blank) this.image = this.images.hit;
+	}
+
+	public miss = () => {
+		if (this.image === blank) this.image = this.images.miss;
+	}
 }

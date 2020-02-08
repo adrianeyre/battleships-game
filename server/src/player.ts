@@ -16,6 +16,11 @@ export default class Player implements IPlayer {
 		this.currentUser = false;
 	}
 
+	public reset = (): void => {
+		this.setupComplete = false;
+		this.currentUser = false;
+	}
+
 	public hasCompletedSetup = (): boolean => this.setupComplete = true;
 	public setCurrentUser = (): boolean => this.currentUser = true;
 	public deseclectCurrectUser = (): boolean => this.currentUser = false;

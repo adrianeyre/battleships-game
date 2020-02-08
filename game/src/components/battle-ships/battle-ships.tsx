@@ -25,7 +25,7 @@ export default class BattleShips extends React.Component<IBattleShipsProps, IBat
 			containerWidth: 800,
 			containerHeight: 800,
 			containerMargin: 0,
-			timerInterval: 0,
+			timerInterval: 1000,
 			messages: [],
 			chatMessage: '',
 		}
@@ -98,10 +98,10 @@ export default class BattleShips extends React.Component<IBattleShipsProps, IBat
 		if (!game.isGameInPlay) this.stopTimer();
 		await this.setState(() => ({ game }));
 
-		if (this.state.game.timerInterval !== this.state.timerInterval) {
-			this.stopTimer();
-			this.startTimer();
-		}
+		// if (this.state.game.timerInterval !== this.state.timerInterval) {
+		// 	this.stopTimer();
+		// 	this.startTimer();
+		// }
 	}
 
 	private handleKeyDown = async (event: any): Promise<void> => {
@@ -111,11 +111,9 @@ export default class BattleShips extends React.Component<IBattleShipsProps, IBat
 	}
 
 	private startTimer = async (): Promise<void> => {
-		if (!this.state.game) return;
-		const timerInterval = this.state.game.timerInterval;
-		const timer = setInterval(this.myTimer, this.state.game.timerInterval);
+		const timer = setInterval(this.myTimer, this.state.timerInterval);
 
-		await this.setState(() => ({ timer, timerInterval }));
+		await this.setState(() => ({ timer }));
 	}
 
 	private stopTimer = async (): Promise<void> => {
@@ -127,7 +125,6 @@ export default class BattleShips extends React.Component<IBattleShipsProps, IBat
 	private myTimer = (): void => {
 		if (!this.state.game) return;
 		const game = this.state.game
-		game.handleTimer();
 
 		this.setState(prev => ({ game }));
 	}

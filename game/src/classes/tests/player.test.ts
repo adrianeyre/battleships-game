@@ -6,6 +6,5 @@ describe('Player', () => {
 
 		expect(player.key).toEqual('player');
 		expect(player.score).toEqual(0);
-		expect(player.isAlive).toEqual(true);
 	});
 });

@@ -9,6 +9,7 @@ export default class BattleShips implements IBattleShips {
 
 	private readonly DEFAULT_BOTH_PLAYERS_LOGGED_IN_MESSAGE = 'Both players have logged in, please set your boards'
 	private readonly DEFAULT_BOTH_PLAYERS_SETUP_COMPLETE_IN_MESSAGE = 'Both players have now setup their boards'
+	private readonly DEFAULT_GAME_OVER_MESSAGE = 'Game Ove! place your ships to play again';
 
 	constructor() {
 		this.players = [];
@@ -23,7 +24,13 @@ export default class BattleShips implements IBattleShips {
 			case MessageActionEnum.SETUP_COMPLETE:
 				return this.setupComplete(data);
 			case MessageActionEnum.FIRE:
-				return this.fire(data);
+				return this.handleInput(MessageActionEnum.FIRE, data);
+			case MessageActionEnum.HIT:
+				return this.handleInput(MessageActionEnum.HIT, data);
+			case MessageActionEnum.MISS:
+				return this.handleInput(MessageActionEnum.MISS, data);
+			case MessageActionEnum.DESTROYED:
+				return this.handleDestroyed(data);
 		}
 
 		return [];
@@ -68,14 +75,37 @@ export default class BattleShips implements IBattleShips {
 		return messages;
 	}
 
-	private fire = (data: IMessage): IMessage[] => {
+	private handleInput = (action: MessageActionEnum, data: IMessage): IMessage[] => {
 		const playerGroup = this.getPlayerGroupById(data.id);
 		const player = this.getPlayerFromGroupById(data.id, playerGroup);
 
 		if (!player) throw Error('Player not found when setup is firing');
-		if (!player.currentUser) return [];
+		if (action === MessageActionEnum.FIRE && !player.currentUser) return [];
 
-		return [...playerGroup].map((player: IPlayer) => this.message(MessageActionEnum.FIRE, player, data.message, data.x, data.y));
+		const currentPlayerId = this.getCurrentPlayerId(playerGroup);
+		if (action !== MessageActionEnum.FIRE) this.swapPlayers(playerGroup);
+		return [...playerGroup].map((player: IPlayer) => this.message(action, player, data.message, data.x, data.y, currentPlayerId));
+	}
+
+	private handleDestroyed = (data: IMessage): IMessage[] => {
+		const playerGroup = this.getPlayerGroupById(data.id);
+		const player = this.getPlayerFromGroupById(data.id, playerGroup);
+
+		if (!player) throw Error('Player not found when setup is firing');
+
+		[...playerGroup].forEach((player: IPlayer) => player.reset());
+
+		return [...playerGroup].map((player: IPlayer) => this.message(MessageActionEnum.GAME_OVER, player, this.DEFAULT_GAME_OVER_MESSAGE));
+	}
+
+	private swapPlayers = (players: IPlayer[]): void => {
+		const currentPlayer = players.find((player: IPlayer) => player.currentUser);
+		const otherPlayer = players.find((player: IPlayer) => !player.currentUser);
+
+		if (!currentPlayer || ! otherPlayer) throw Error('currentPlayer or otherPlayer not found');
+
+		currentPlayer.deseclectCurrectUser();
+		otherPlayer.setCurrentUser();
 	}
 
 	private setCurrentPlayer = (players: IPlayer[], index: number): void => {
@@ -83,7 +113,18 @@ export default class BattleShips implements IBattleShips {
 		players[index === 0 ? 1 : 0].deseclectCurrectUser();
 	}
 
+	private getCurrentPlayerId = (players: IPlayer[]): string => {
+		let id = '';
+
+		players.forEach((player: IPlayer) => {
+			if (player.currentUser) return id = player.id;
+		});
+
+		return id;
+	}
+
 	private sendMessage = (data: IMessage): IMessage[] => {
+		console.log('SENDING MESSAGE')
 		const playerGroup = this.getPlayerGroupById(data.id);
 		return [...playerGroup].map((player: IPlayer) => this.message(MessageActionEnum.MESSAGE, player, data.message));
 	}
@@ -102,13 +143,14 @@ export default class BattleShips implements IBattleShips {
 
 	private getPlayerFromGroupById = (id: string, group: IPlayer[]) => group.find((player: IPlayer) => player.id === id);
 
-	private message = (action: MessageActionEnum, player: IPlayer, message: string, x?: number, y?: number): IMessage => ({
+	private message = (action: MessageActionEnum, player: IPlayer, message: string, x?: number, y?: number, currentUser?: string): IMessage => ({
 		dateTime: Date.now(),
 		action,
 		id: player.id,
 		socketId: player.socketId,
 		name: player.name,
 		message,
+		currentUser,
 		x,
 		y,
 	})

@@ -4,6 +4,7 @@ export default interface IPlayer {
 	socketId: string;
 	setupComplete: boolean;
 	currentUser: boolean;
+	reset(): void;
 	hasCompletedSetup(): boolean;
 	setCurrentUser(): boolean;
 	deseclectCurrectUser(): boolean;
