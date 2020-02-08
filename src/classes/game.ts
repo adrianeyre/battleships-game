@@ -44,6 +44,7 @@ export default class Game implements IGame {
 			action: MessageActionEnum.LOGIN,
 			id: this.players[this.playerIndex].id,
 			name: this.players[this.playerIndex].name,
+			colour: '',
 			message: `${ this.players[this.playerIndex].name } has joined the game`,
 		});
 	}
@@ -174,6 +175,7 @@ export default class Game implements IGame {
 			id: player.id,
 			name: player.name,
 			message,
+			colour: '',
 			currentUser,
 			x,
 			y,

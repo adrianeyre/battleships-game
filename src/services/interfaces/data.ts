@@ -1,6 +1,6 @@
 import IMessage from './message';
 
 export default interface IData {
-	messages: string[];
+	messages: IMessage[];
 	sendMessage(message: IMessage): void;
 }

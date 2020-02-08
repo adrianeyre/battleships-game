@@ -7,7 +7,7 @@ import IMessage from "./interfaces/message";
 import MessageActionEnum from './enums/message-action-enum';
 
 export default class Data implements IData {
-	public messages: string[];
+	public messages: IMessage[];
 	public handleData: any;
 	public handleMessageReceived: any;
 	public id: string;
@@ -23,7 +23,6 @@ export default class Data implements IData {
 		this.id = config.id;
 		this.name = config.name;
 
-		console.log(process.env)
 		if (!this.END_POINT) throw Error('REACT_APP_SERVER needs setting in your environment!');
 		this.socket = socketIOClient(this.END_POINT);
 		this.socket.on("battle-ships-data", (message: IMessage) => this.handleMessage(message));
@@ -49,7 +48,8 @@ export default class Data implements IData {
 				return this.checkIn();
 		}
 
-		this.messages.unshift(`[${ moment(message.dateTime).format("HH:mm") }] ${ message.message }`);
+		const displayMessage = {...message, message: `[${ moment(message.dateTime).format("HH:mm") }] ${ message.message }`}
+		this.messages.unshift(displayMessage);
 	}
 
 	private checkIn = (): void => {
@@ -58,6 +58,7 @@ export default class Data implements IData {
 			id: this.id,
 			name: this.name,
 			message: '',
+			colour: '',
 		})
 	}
 }

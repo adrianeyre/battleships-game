@@ -1,6 +1,7 @@
+import IMessage from '../../../services/interfaces/message';
 
 export default interface IGameStatusProps {
-	messages: string[];
+	messages: IMessage[];
 	containerWidth: number;
 	spriteWidth: number;
 	handleSendMessage(message: string): void;

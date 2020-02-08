@@ -2,6 +2,7 @@ import React from 'react';
 
 import IGameStatusProps from './interfaces/game-status-props'
 import IGameStatusState from './interfaces/game-status-state'
+import IMessage from '../../services/interfaces/message';
 
 import './styles/game-status.scss';
 
@@ -18,8 +19,8 @@ export default class GameStatus extends React.Component<IGameStatusProps, IGameS
 		return <div className="game-status" style={ this.styleGameStatus() }>
 			<div className="status-title">Game Status</div>
 			<div className="status">
-				{ this.props.messages.map((message: string, messageIndex: number) => 
-					<div className="status-message" key={ `message-${ messageIndex }`}>{ message }</div>
+				{ this.props.messages.map((message: IMessage, messageIndex: number) => 
+					<div  className="status-message" style={ this.styleTextColour(message.colour) } key={ `message-${ messageIndex }`}>{ message.message }</div>
 				)}
 			</div>
 			<div className="chat-input">
@@ -32,6 +33,9 @@ export default class GameStatus extends React.Component<IGameStatusProps, IGameS
 	private styleGameStatus = () => ({
 		marginLeft: `${ (this.props.containerWidth / 2) + (this.props.spriteWidth / 2) }px`,
 		height: `${ this.props.containerWidth }px`,
+	})
+	private styleTextColour = (color: string) => ({
+		color,
 	})
 
 	private handleChatMessage = (event: any) => {
