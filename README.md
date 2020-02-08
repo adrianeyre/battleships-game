@@ -16,6 +16,8 @@ $ npm install
 $ npm start
 ```
 
+Create a file called `.env` in the root folder and add the environment variable `REACT_APP_SERVER=http://localhost:4000`
+
 ## <a name="Shots">Screen Shots</a>
 [![Screenshot](https://raw.githubusercontent.com/adrianeyre/battle-ships/master/src/images/screenshot1.png)](https://raw.githubusercontent.com/adrianeyre/battle-ships/master/src/images/screenshot1.png "Game View")
 
