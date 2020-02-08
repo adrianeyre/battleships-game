@@ -9,6 +9,22 @@ $info-board-text-colour: black;
 	z-index: 10000;
 	margin-top: 5%;
 
+	table {
+		width: 80%;
+		margin: 0 4em;
+		margin-bottom: 1em;
+
+		td {
+			text-align: center;
+			padding: 0.6em;
+		}
+
+		.title {
+			color: $info-board-background;
+			background-color: $info-board-text-colour;
+		}
+	}
+
 	.game-over-area {
 		margin: 2em;
 		text-align: center;

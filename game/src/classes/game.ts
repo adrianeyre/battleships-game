@@ -26,7 +26,7 @@ export default class Game implements IGame {
 		const handleData = (action: MessageActionEnum, message: IMessage) => this.handleData(action, message);
 		const handleMessageReceived = () => this.messageSending = false;
 
-		this.data = new Data({ handleData, handleMessageReceived });
+		
 		this.isGameInPlay = false;
 		this.fireX = -1;
 		this.fireY = -1;
@@ -36,6 +36,9 @@ export default class Game implements IGame {
 			new Player({ key: 'player', name: config.playerName, y: 1 }),
 			new Player({ key: 'opponent', y: 12 }),
 		];
+
+		const player = this.players[this.playerIndex];
+		this.data = new Data({ handleData, handleMessageReceived, id: player.id, name: player.name });
 
 		this.data.sendMessage({
 			action: MessageActionEnum.LOGIN,
@@ -111,6 +114,7 @@ export default class Game implements IGame {
 
 	private handleData = (action: MessageActionEnum, message: IMessage): void => {
 		if (action === MessageActionEnum.GAME_OVER) return this.gameOver();
+		if (action === MessageActionEnum.LOGOUT) return this.logout();
 		if (!message.currentUser) throw new Error('No X, Y or Current User set!');
 
 		const currentUser = message.currentUser === this.players[this.playerIndex].id;
@@ -152,6 +156,10 @@ export default class Game implements IGame {
 	private gameOver = () => {
 		this.players[this.playerIndex].reset();
 		this.players[this.opponentIndex].reset();
+	}
+
+	private logout = (): void => {
+		this.isGameInPlay = false;
 	}
 
 	private hit = (): void => this.sendMessageToService(MessageActionEnum.HIT, this.players[this.playerIndex], `[${ this.players[this.playerIndex].name }] has been hit!`);

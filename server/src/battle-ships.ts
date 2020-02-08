@@ -15,6 +15,36 @@ export default class BattleShips implements IBattleShips {
 		this.players = [];
 	}
 
+	public checkIn = (): IMessage[] => {
+		const messages: IMessage[] = [];
+		const disconnectedGroups: IPlayer[][] = [];
+
+		this.players.forEach((playerGroup: IPlayer[]) => {
+			playerGroup.forEach((player: IPlayer) => {
+				if (!player.checked) {
+					this.logOutGroup(playerGroup, messages);
+					disconnectedGroups.push(playerGroup);
+				}
+
+				player.resetCheck();
+				messages.push(this.message(MessageActionEnum.CHECK, player, ''));
+			})
+		})
+
+		disconnectedGroups.forEach((group: IPlayer[]) => {
+			const index = this.players.indexOf(group);
+			if (index < 0) throw Error('Could not find group to remove');
+
+			this.players.splice(index, 1);
+		})
+
+		return messages
+	}
+
+	private logOutGroup = (playerGroup: IPlayer[], messages: IMessage[]): void => {
+		playerGroup.forEach((player: IPlayer) => messages.push(this.message(MessageActionEnum.LOGOUT, player, 'Players have disconnected!')));
+	}
+
 	public handle = (data: IMessage): IMessage[] => {
 		switch (data.action) {
 			case MessageActionEnum.MESSAGE:
@@ -31,6 +61,8 @@ export default class BattleShips implements IBattleShips {
 				return this.handleInput(MessageActionEnum.MISS, data);
 			case MessageActionEnum.DESTROYED:
 				return this.handleDestroyed(data);
+			case MessageActionEnum.RESPOND:
+				this.respond(data); break;
 		}
 
 		return [];
@@ -56,8 +88,19 @@ export default class BattleShips implements IBattleShips {
 		return messages;
 	}
 
+	private respond = (data: IMessage): void => {
+		const playerGroup = this.getPlayerGroupById(data.id);
+		if (!playerGroup) return;
+		const player = this.getPlayerFromGroupById(data.id, playerGroup);
+
+		if (!player) throw Error('Player not found to respond');
+
+		player.respond();
+	}
+
 	private setupComplete = (data: IMessage): IMessage[] => {
 		const playerGroup = this.getPlayerGroupById(data.id);
+		if (!playerGroup) throw Error(`No player for id: ${ data.id } was found`);
 		const player = this.getPlayerFromGroupById(data.id, playerGroup);
 
 		if (!player) throw Error('Player not found when setup is complete');
@@ -77,6 +120,7 @@ export default class BattleShips implements IBattleShips {
 
 	private handleInput = (action: MessageActionEnum, data: IMessage): IMessage[] => {
 		const playerGroup = this.getPlayerGroupById(data.id);
+		if (!playerGroup) throw Error(`No player for id: ${ data.id } was found`);
 		const player = this.getPlayerFromGroupById(data.id, playerGroup);
 
 		if (!player) throw Error('Player not found when setup is firing');
@@ -89,6 +133,7 @@ export default class BattleShips implements IBattleShips {
 
 	private handleDestroyed = (data: IMessage): IMessage[] => {
 		const playerGroup = this.getPlayerGroupById(data.id);
+		if (!playerGroup) throw Error(`No player for id: ${ data.id } was found`);
 		const player = this.getPlayerFromGroupById(data.id, playerGroup);
 
 		if (!player) throw Error('Player not found when setup is firing');
@@ -124,19 +169,17 @@ export default class BattleShips implements IBattleShips {
 	}
 
 	private sendMessage = (data: IMessage): IMessage[] => {
-		console.log('SENDING MESSAGE')
 		const playerGroup = this.getPlayerGroupById(data.id);
+		if (!playerGroup) throw Error(`No player for id: ${ data.id } was found`);
 		return [...playerGroup].map((player: IPlayer) => this.message(MessageActionEnum.MESSAGE, player, data.message));
 	}
 
-	private getPlayerGroupById = (id: string): IPlayer[] => {
+	private getPlayerGroupById = (id: string): IPlayer[] | null => {
 		let selectedPlayerGroup = null;
 
 		this.players.forEach((playerGroup: IPlayer[]) => {
 			if (this.getPlayerFromGroupById(id, playerGroup)) return selectedPlayerGroup = playerGroup;
 		});
-
-		if (!selectedPlayerGroup) throw Error(`No player for id: ${ id } was found`);
 
 		return selectedPlayerGroup;
 	}

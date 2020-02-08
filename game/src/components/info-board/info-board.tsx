@@ -29,6 +29,38 @@ export default class InfoBoard extends React.Component<IInfoBoardProps, IInfoBoa
 
 			<div className="info-board-instructions">
 				<p>Each player places the 5 ships somewhere on their board.  The ships can only be placed vertically or horizontally. Diagonal placement is not allowed. No part of a ship may hang off the edge of the board.  Ships may not overlap each other.  No ships may be placed on another ship. Once the guessing begins, the players may not move the ships.</p>
+				<table>
+					<tbody>
+						<tr>
+							<td className="title">Function</td>
+							<td className="title">Key</td>
+						</tr>
+						<tr>
+							<td>Move Up</td>
+							<td>Mouse Up</td>
+						</tr>
+						<tr>
+							<td>Move Down</td>
+							<td>Mouse Down</td>
+						</tr>
+						<tr>
+							<td>Move Left</td>
+							<td>Mouse Left</td>
+						</tr>
+						<tr>
+							<td>Move Right</td>
+							<td>Mouse Right</td>
+						</tr>
+						<tr>
+							<td>Rotate</td>
+							<td>Right Click</td>
+						</tr>
+						<tr>
+							<td>Select</td>
+							<td>Left Click</td>
+						</tr>
+					</tbody>
+				</table>
 			</div>
 
 			<div className="player-input">

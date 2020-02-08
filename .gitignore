@@ -18,15 +18,11 @@ server/build
 
 # misc
 game/.DS_Store
-game/.env.local
-game/.env.development.local
-game/.env.test.local
-game/.env.production.local
+game/.env
+game/.env.production
 server/.DS_Store
-server/.env.local
-server/.env.development.local
-server/.env.test.local
-server/.env.production.local
+server/.env
+server/.env.production
 
 game/npm-debug.log*
 game/yarn-debug.log*

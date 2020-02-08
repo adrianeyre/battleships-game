@@ -97,11 +97,6 @@ export default class BattleShips extends React.Component<IBattleShipsProps, IBat
 
 		if (!game.isGameInPlay) this.stopTimer();
 		await this.setState(() => ({ game }));
-
-		// if (this.state.game.timerInterval !== this.state.timerInterval) {
-		// 	this.stopTimer();
-		// 	this.startTimer();
-		// }
 	}
 
 	private handleKeyDown = async (event: any): Promise<void> => {

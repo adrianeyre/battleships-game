@@ -7,6 +7,9 @@ enum MessageActionEnum {
 	MISS = 5,
 	DESTROYED = 6,
 	GAME_OVER = 7,
+	CHECK = 8,
+	RESPOND = 9,
+	LOGOUT = 10,
 }
 
 export default MessageActionEnum;
