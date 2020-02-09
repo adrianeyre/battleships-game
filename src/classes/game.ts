@@ -11,7 +11,6 @@ import IMessage from 'services/interfaces/message';
 export default class Game implements IGame {
 	public data: IData;
 	public timer: any
-	public timerInterval: number;
 	public isGameInPlay: boolean;
 	public players: IPlayer[];
 
@@ -20,18 +19,15 @@ export default class Game implements IGame {
 	private fireX: number;
 	private fireY: number;
 	private messageSending: boolean;
-	readonly defaultTimerInterval: number = 1000;
 	
 	constructor(config: IBattleShipsProps) {
 		const handleData = (action: MessageActionEnum, message: IMessage) => this.handleData(action, message);
 		const handleMessageReceived = () => this.messageSending = false;
 
-		
 		this.isGameInPlay = false;
 		this.fireX = -1;
 		this.fireY = -1;
 		this.messageSending = false;
-		this.timerInterval = this.defaultTimerInterval;
 		this.players = [
 			new Player({ key: 'player', name: config.playerName, y: 1 }),
 			new Player({ key: 'opponent', y: 12 }),

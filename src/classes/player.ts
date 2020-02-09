@@ -107,6 +107,13 @@ export default class Player implements IPlayer {
 		sprite.miss();
 	}
 
+	public rotate = (key: string): void => {
+		this.direction = this.direction === DirectionEnum.HORIZONTAL ? DirectionEnum.VERTICAL : DirectionEnum.HORIZONTAL;
+		this.updateBlock(key, false);
+	}
+
+	public findSpriteByKey = (key: string): ISprite | undefined =>  this.sprites.find((s: ISprite) => s.key === key);
+
 	private setBoardImages = (matrices: IMatrices, baseSprite: ISprite, set: boolean): boolean => {
 		let allowed = true;
 		const images = [];
@@ -136,13 +143,6 @@ export default class Player implements IPlayer {
 
 		return allowed
 	}
-
-	public rotate = (key: string): void => {
-		this.direction = this.direction === DirectionEnum.HORIZONTAL ? DirectionEnum.VERTICAL : DirectionEnum.HORIZONTAL;
-		this.updateBlock(key, false);
-	}
-
-	public findSpriteByKey = (key: string): ISprite | undefined =>  this.sprites.find((s: ISprite) => s.key === key);
 
 	private setBoard = (): void => {
 		this.board = [];

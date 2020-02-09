@@ -1,5 +1,4 @@
-$info-board-background: white;
-$info-board-text-colour: black;
+@import '../../default-styles/colours.scss';
 
 .info-board {
 	position: absolute;
@@ -77,11 +76,11 @@ $info-board-text-colour: black;
 		text-align: center;
 
 		button.disabled {
-			background-color: grey;
+			background-color: $info-board-disabled-colour;
 		}
 
 		button.disabled:hover {
-			color: white;
+			color: $info-board-disabled-hover;
 		}
 	}
 }

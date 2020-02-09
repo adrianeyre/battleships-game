@@ -1,5 +1,7 @@
+@import '../../default-styles/colours.scss';
+
 .game-status {
-	color: black;
+	color: $game-satus-default-colour;
 	position: relative;
 
 	.status-title {

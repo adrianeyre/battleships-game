@@ -47,7 +47,6 @@ export default class Data implements IData {
 				return this.checkIn();
 		}
 
-		// const displayMessage = {...message, message: `[${ moment(message.dateTime).format("HH:mm") }] ${ message.message }`}
 		this.messages.unshift({...message});
 	}
 
