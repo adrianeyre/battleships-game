@@ -1,4 +1,5 @@
 import React from 'react';
+import moment from 'moment';
 
 import IGameStatusProps from './interfaces/game-status-props'
 import IGameStatusState from './interfaces/game-status-state'
@@ -20,7 +21,10 @@ export default class GameStatus extends React.Component<IGameStatusProps, IGameS
 			<div className="status-title">Game Status</div>
 			<div className="status">
 				{ this.props.messages.map((message: IMessage, messageIndex: number) => 
-					<div  className="status-message" style={ this.styleTextColour(message.colour) } key={ `message-${ messageIndex }`}>{ message.message }</div>
+					<div  className="status-message">
+						[{ moment(message.dateTime).format("HH:mm") }]
+						<span style={ this.styleTextColour(message.colour) } key={ `message-${ messageIndex }`}> { message.message }</span>
+					</div>
 				)}
 			</div>
 			<div className="chat-input">

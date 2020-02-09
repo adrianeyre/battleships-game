@@ -3,6 +3,9 @@ import React from 'react';
 import IInfoBoardProps from './interfaces/info-board-props';
 import IInfoBoardState from './interfaces/info-board-state';
 
+import ship1 from '../../images/ship-01.png';
+import ship2 from '../../images/ship-02.png';
+
 import './styles/info-board.scss';
 
 export default class InfoBoard extends React.Component<IInfoBoardProps, IInfoBoardState> {
@@ -17,9 +20,9 @@ export default class InfoBoard extends React.Component<IInfoBoardProps, IInfoBoa
 	public render() {
 		return <div className="info-board" style={ this.styleInfoBoard() }>
 			<div className="info-board-header">
-				{/* <img src={ sprite } alt="player" /> */}
+				<img src={ ship1 } alt="ship" />
 				<span className="header-text">Battle Ships</span>
-				{/* <img src={sprite } alt="player" /> */}
+				<img src={ ship2 } alt="ship" />
 			</div>
 
 			{ this.props.gameOver && <div className="game-over-area">

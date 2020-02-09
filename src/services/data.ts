@@ -1,5 +1,4 @@
 import socketIOClient from 'socket.io-client';
-import moment from 'moment';
 
 import IData from './interfaces/data';
 import IDataProps from './interfaces/data-props'
@@ -48,8 +47,8 @@ export default class Data implements IData {
 				return this.checkIn();
 		}
 
-		const displayMessage = {...message, message: `[${ moment(message.dateTime).format("HH:mm") }] ${ message.message }`}
-		this.messages.unshift(displayMessage);
+		// const displayMessage = {...message, message: `[${ moment(message.dateTime).format("HH:mm") }] ${ message.message }`}
+		this.messages.unshift({...message});
 	}
 
 	private checkIn = (): void => {
