@@ -21,9 +21,9 @@ export default class GameStatus extends React.Component<IGameStatusProps, IGameS
 			<div className="status-title">Game Status</div>
 			<div className="status">
 				{ this.props.messages.map((message: IMessage, messageIndex: number) => 
-					<div  className="status-message">
+					<div key={ `message-${ messageIndex }`} className="status-message">
 						[{ moment(message.dateTime).format("HH:mm") }]
-						<span style={ this.styleTextColour(message.colour) } key={ `message-${ messageIndex }`}> { message.message }</span>
+						<span style={ this.styleTextColour(message.colour) } > { message.message }</span>
 					</div>
 				)}
 			</div>
@@ -38,9 +38,8 @@ export default class GameStatus extends React.Component<IGameStatusProps, IGameS
 		marginLeft: `${ (this.props.containerWidth / 2) + (this.props.spriteWidth / 2) }px`,
 		height: `${ this.props.containerWidth }px`,
 	})
-	private styleTextColour = (color: string) => ({
-		color,
-	})
+
+	private styleTextColour = (color: string) => ({ color });
 
 	private handleChatMessage = (event: any) => {
 		const chatMessage = event.target.value;

@@ -25,11 +25,6 @@ export default class InfoBoard extends React.Component<IInfoBoardProps, IInfoBoa
 				<img src={ ship2 } alt="ship" />
 			</div>
 
-			{ this.props.gameOver && <div className="game-over-area">
-				<div className="game-over-title">Game Over</div>
-				<div className="game-over-text">You scored { this.props.score }, better luck next time!</div>
-			</div> }
-
 			<div className="info-board-instructions">
 				<p>Each player places the 5 ships somewhere on their board.  The ships can only be placed vertically or horizontally. Diagonal placement is not allowed. No part of a ship may hang off the edge of the board.  Ships may not overlap each other.  No ships may be placed on another ship. Once the guessing begins, the players may not move the ships.</p>
 				<table>

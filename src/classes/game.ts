@@ -13,15 +13,18 @@ export default class Game implements IGame {
 	public timer: any
 	public isGameInPlay: boolean;
 	public players: IPlayer[];
+	public flashMessage?: IMessage;
 
 	private playerIndex: number = 0;
 	private opponentIndex: number = 1;
 	private fireX: number;
 	private fireY: number;
 	private messageSending: boolean;
+	private flashMessageTimer?: any;
+	private readonly flashMessageTime: number = 5000;
 	
 	constructor(config: IBattleShipsProps) {
-		const handleData = (action: MessageActionEnum, message: IMessage) => this.handleData(action, message);
+		const handleData = (message: IMessage) => this.handleData(message);
 		const handleMessageReceived = () => this.messageSending = false;
 
 		this.isGameInPlay = false;
@@ -88,7 +91,7 @@ export default class Game implements IGame {
 
 	private sunk = (playerResult: PlayerResultEnum, key?: string): void => {
 		this.hit();
-		this.sendMessageToService(MessageActionEnum.MESSAGE, this.players[this.playerIndex], `[${ this.players[this.playerIndex].name }] you have sunk my ${ playerResult }`);
+		this.sendMessageToService(MessageActionEnum.SUNK, this.players[this.playerIndex], `[${ this.players[this.playerIndex].name }] you have sunk my ${ playerResult }`);
 	}
 
 	private destroyed = (key?: string): void => {
@@ -109,9 +112,16 @@ export default class Game implements IGame {
 		this.sendMessageToService(MessageActionEnum.FIRE, player, `[${ player.name }] fire x: ${ sprite.xPos }, y: ${ sprite.yPos }`, player.id, sprite.xPos, sprite.yPos)
 	}
 
-	private handleData = (action: MessageActionEnum, message: IMessage): void => {
-		if (action === MessageActionEnum.GAME_OVER) return this.gameOver();
-		if (action === MessageActionEnum.LOGOUT) return this.logout();
+	private handleData = (message: IMessage): void => {
+		switch (message.action) {
+			case MessageActionEnum.GAME_OVER:
+				return this.gameOver(message);
+			case MessageActionEnum.LOGOUT:
+				return this.logout();
+			case MessageActionEnum.SUNK:
+				return this.setFlashMessage(message);
+		}
+
 		if (!message.currentUser) throw new Error('No X, Y or Current User set!');
 
 		const currentUser = message.currentUser === this.players[this.playerIndex].id;
@@ -119,7 +129,7 @@ export default class Game implements IGame {
 
 		if (!playerReceiving) throw Error('playerRequesting or playerReceiving not found!');
 
-		switch (action) {
+		switch (message.action) {
 			case MessageActionEnum.FIRE:
 				return this.handleFire(playerReceiving, message, currentUser);
 			case MessageActionEnum.HIT:
@@ -150,7 +160,8 @@ export default class Game implements IGame {
 		player.miss(this.fireX, this.fireY);
 	}
 
-	private gameOver = () => {
+	private gameOver = (message: IMessage) => {
+		this.setFlashMessage(message);
 		this.players[this.playerIndex].reset();
 		this.players[this.opponentIndex].reset();
 	}
@@ -176,5 +187,17 @@ export default class Game implements IGame {
 			x,
 			y,
 		});
+	}
+
+	private setFlashMessage = (message: IMessage): void => {
+		this.flashMessage = message;
+
+		this.flashMessageTimer = setInterval(this.unsetFlashMessage, this.flashMessageTime);
+	}
+	
+	private unsetFlashMessage = (): void => {
+		this.flashMessage = undefined;
+
+		clearInterval(this.flashMessageTimer);
 	}
 }

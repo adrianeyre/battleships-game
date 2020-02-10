@@ -34,21 +34,20 @@ export default class Data implements IData {
 
 		switch (message.action) {
 			case MessageActionEnum.FIRE:
-				this.handleData(MessageActionEnum.FIRE, message); break;
 			case MessageActionEnum.HIT:
-				this.handleData(MessageActionEnum.HIT, message); break;
 			case MessageActionEnum.MISS:
-				this.handleData(MessageActionEnum.MISS, message); break;
 			case MessageActionEnum.GAME_OVER:
-				this.handleData(MessageActionEnum.GAME_OVER, message); break;
 			case MessageActionEnum.LOGOUT:
-				this.handleData(MessageActionEnum.LOGOUT, message); break;
+			case MessageActionEnum.SUNK:
+				this.handleData(message); break;
 			case MessageActionEnum.CHECK:
 				return this.checkIn();
 		}
 
-		this.messages.unshift({...message});
+		this.addMessage(message);
 	}
+
+	private addMessage = (message: IMessage) => this.messages.unshift({...message});
 
 	private checkIn = (): void => {
 		this.sendMessage({

@@ -1,0 +1,32 @@
+@import '../../default-styles/colours.scss';
+
+.flash-message {
+	position: absolute;
+	background-color: $info-board-background;
+	color: $info-board-text-colour;
+	opacity: 0.9;
+	z-index: 10000;
+	top: 5em;
+	text-align: center;
+	height: 100px;
+	line-height: 100px;
+
+	.message {
+		display: inline-block;
+		margin: auto;
+		vertical-align: middle;
+		
+	}
+}
+
+@media (max-width: 600px) {
+	.flash-message {
+		font-size: 0.8em;
+	}
+}
+
+@media (max-width: 500px) {
+	.flash-message {
+		font-size: 0.5em;
+	}
+}

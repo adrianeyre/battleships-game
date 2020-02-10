@@ -7,6 +7,7 @@ import IBattleShipsState from './interfaces/battle-ships-state';
 import DrawSprite from '../draw-sprite/draw-sprite';
 import InfoBoard from '../info-board/info-board';
 import GameStatus from '../game-status/game-status';
+import FlashMessage from '../flash-message/flash-message';
 
 import './styles/battle-ships.scss';
 import PlayerResultEnum from 'classes/enums/player-result-enum';
@@ -49,7 +50,7 @@ export default class BattleShips extends React.Component<IBattleShipsProps, IBat
 	public render() {
 		return <div className="battle-ships-play-container" ref={(d) => { this.container = d }} style={ this.styleContainer() }>
 
-			{ (!this.state.game || !this.state.game.isGameInPlay) && <InfoBoard gameOver={ false } startGame={ this.startGame } score={ 0 } containerHeight={ this.state.containerHeight } /> }
+			{ (!this.state.game || !this.state.game.isGameInPlay) && <InfoBoard startGame={ this.startGame } containerHeight={ this.state.containerHeight } /> }
 
 			{ this.state.game && <div>
 				<div className="play-area">
@@ -60,6 +61,8 @@ export default class BattleShips extends React.Component<IBattleShipsProps, IBat
 				<div>
 					<GameStatus messages={ this.state.game.data.messages } handleSendMessage={ this.handleSendMessage } containerWidth={ this.state.containerWidth} spriteWidth={ this.state.spriteWidth } ></GameStatus>
 				</div>
+
+				{ this.state.game.flashMessage && <FlashMessage message={this.state.game.flashMessage } containerHeight={ this.state.containerHeight } /> }
 			</div> }
 			
 		</div>

@@ -10,6 +10,7 @@ enum MessageActionEnum {
 	CHECK = 8,
 	RESPOND = 9,
 	LOGOUT = 10,
+	SUNK = 11,
 }
 
 export default MessageActionEnum;
