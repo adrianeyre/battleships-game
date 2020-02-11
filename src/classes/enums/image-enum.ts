@@ -12,6 +12,7 @@ enum ImageEnum {
 	BAD_VERTICAL_DOWN = 'block10',
 	BAD_HORIZONTAL = 'block11',
 	BAD_VERTICAL = 'block12',
+	TURN = 'block15',
 }
 
 export default ImageEnum;

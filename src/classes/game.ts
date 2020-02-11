@@ -1,5 +1,7 @@
 import IGame from './interfaces/game';
 import PlayerResultEnum from './enums/player-result-enum';
+import ImageEnum from './enums/image-enum';
+import SpriteTypeEnum from './enums/sprite-type-enum'
 import IBattleShipsProps from '../components/battle-ships/interfaces/battle-ships-props';
 import Player from './player';
 import IPlayer from './interfaces/player';
@@ -7,6 +9,8 @@ import IData from '../services/interfaces/data';
 import Data from '../services/data';
 import MessageActionEnum from '../services/enums/message-action-enum';
 import IMessage from 'services/interfaces/message';
+import ISprite from './interfaces/sprite';
+import Sprite from './sprite';
 
 export default class Game implements IGame {
 	public data: IData;
@@ -14,6 +18,7 @@ export default class Game implements IGame {
 	public isGameInPlay: boolean;
 	public players: IPlayer[];
 	public flashMessage?: IMessage;
+	public turnSprite: ISprite;
 
 	private playerIndex: number = 0;
 	private opponentIndex: number = 1;
@@ -35,6 +40,16 @@ export default class Game implements IGame {
 			new Player({ key: 'player', name: config.playerName, y: 1 }),
 			new Player({ key: 'opponent', y: 12 }),
 		];
+		this.turnSprite = new Sprite({
+			key: 'turn-1',
+			visable: false,
+			x: 11,
+			y: 16,
+			xPos: 11,
+			yPos: 16,
+			image: ImageEnum.TURN,
+			type: SpriteTypeEnum.BLANK,
+		});
 
 		const player = this.players[this.playerIndex];
 		this.data = new Data({ handleData, handleMessageReceived, id: player.id, name: player.name });
@@ -91,12 +106,12 @@ export default class Game implements IGame {
 
 	private sunk = (playerResult: PlayerResultEnum, key?: string): void => {
 		this.hit();
-		this.sendMessageToService(MessageActionEnum.SUNK, this.players[this.playerIndex], `[${ this.players[this.playerIndex].name }] you have sunk my ${ playerResult }`);
+		this.sendMessageToService(MessageActionEnum.SUNK, this.players[this.playerIndex], '', undefined, undefined, undefined, playerResult);
 	}
 
 	private destroyed = (key?: string): void => {
 		this.hit();
-		this.sendMessageToService(MessageActionEnum.DESTROYED, this.players[this.playerIndex], `[${ this.players[this.playerIndex].name }] all my ships are sunk! you win!`);
+		this.sendMessageToService(MessageActionEnum.DESTROYED, this.players[this.playerIndex], '');
 	}
 
 	private fire = (key?: string): void => {
@@ -109,16 +124,19 @@ export default class Game implements IGame {
 		this.fireX = sprite.xPos;
 		this.fireY = sprite.yPos;
 		const player = this.players[this.playerIndex];
-		this.sendMessageToService(MessageActionEnum.FIRE, player, `[${ player.name }] fire x: ${ sprite.xPos }, y: ${ sprite.yPos }`, player.id, sprite.xPos, sprite.yPos)
+		this.sendMessageToService(MessageActionEnum.FIRE, player, '', player.id, sprite.xPos, sprite.yPos)
 	}
 
 	private handleData = (message: IMessage): void => {
+		this.turnSprite.visable = message.id === this.players[this.playerIndex].id;
+
 		switch (message.action) {
 			case MessageActionEnum.GAME_OVER:
 				return this.gameOver(message);
 			case MessageActionEnum.LOGOUT:
 				return this.logout();
 			case MessageActionEnum.SUNK:
+			case MessageActionEnum.START_GAME:
 				return this.setFlashMessage(message);
 		}
 
@@ -170,12 +188,12 @@ export default class Game implements IGame {
 		this.isGameInPlay = false;
 	}
 
-	private hit = (): void => this.sendMessageToService(MessageActionEnum.HIT, this.players[this.playerIndex], `[${ this.players[this.playerIndex].name }] has been hit!`);
-	private miss = (): void => this.sendMessageToService(MessageActionEnum.MISS, this.players[this.playerIndex], `[${ this.players[this.playerIndex].name }] you missed my ships!`);
-	private playerDoneEditing = (): void => this.sendMessageToService(MessageActionEnum.SETUP_COMPLETE, this.players[this.playerIndex], `${ this.players[this.playerIndex].name } has finished setting their board up`)
+	private hit = (): void => this.sendMessageToService(MessageActionEnum.HIT, this.players[this.playerIndex], '');
+	private miss = (): void => this.sendMessageToService(MessageActionEnum.MISS, this.players[this.playerIndex], '');
+	private playerDoneEditing = (): void => this.sendMessageToService(MessageActionEnum.SETUP_COMPLETE, this.players[this.playerIndex], '')
 	public sendMessage = (message: string): void => this.sendMessageToService(MessageActionEnum.MESSAGE, this.players[this.playerIndex], `[${ this.players[this.playerIndex].name }] ${ message }`);
 
-	private sendMessageToService = (action: MessageActionEnum, player: IPlayer, message: string, currentUser?: string, x?: number, y?: number): void => {
+	private sendMessageToService = (action: MessageActionEnum, player: IPlayer, message: string, currentUser?: string, x?: number, y?: number, ship?: PlayerResultEnum): void => {
 		this.messageSending = true;
 		this.data.sendMessage({
 			action,
@@ -186,6 +204,7 @@ export default class Game implements IGame {
 			currentUser,
 			x,
 			y,
+			ship,
 		});
 	}
 

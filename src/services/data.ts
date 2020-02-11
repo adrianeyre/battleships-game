@@ -39,6 +39,7 @@ export default class Data implements IData {
 			case MessageActionEnum.GAME_OVER:
 			case MessageActionEnum.LOGOUT:
 			case MessageActionEnum.SUNK:
+			case MessageActionEnum.START_GAME:
 				this.handleData(message); break;
 			case MessageActionEnum.CHECK:
 				return this.checkIn();

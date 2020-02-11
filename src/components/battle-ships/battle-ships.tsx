@@ -56,6 +56,7 @@ export default class BattleShips extends React.Component<IBattleShipsProps, IBat
 				<div className="play-area">
 					{ this.state.game.players[0].sprites.map((sprite: ISprite) => <DrawSprite key={ sprite.key } onMouseOver={ this.onMouseOver } onContextMenu={ this.onContextMenu } onClick={ this.onClick } sprite={ sprite } height={ this.state.spriteHeight } width={ this.state.spriteWidth } containerWidth={ this.state.containerWidth } />) }
 					{ this.state.game.players[1].sprites.map((sprite: ISprite) => <DrawSprite key={ sprite.key } onClick={ this.onOpponentClick } sprite={ sprite } height={ this.state.spriteHeight } width={ this.state.spriteWidth } containerWidth={ this.state.containerWidth } />) }
+					<DrawSprite key={ this.state.game.turnSprite.key } onClick={ this.onTurnClick } sprite={ this.state.game.turnSprite } height={ this.state.spriteHeight } width={ this.state.spriteWidth } containerWidth={ this.state.containerWidth } />
 				</div>
 
 				<div>
@@ -131,6 +132,7 @@ export default class BattleShips extends React.Component<IBattleShipsProps, IBat
 	private onClick = async (key: string): Promise<void> => this.handleInput(PlayerResultEnum.SELECT, key);
 	private onOpponentClick = async (key: string): Promise<void> => this.handleInput(PlayerResultEnum.FIRE, key);
 	private onContextMenu = async (key: string): Promise<void> => this.handleInput(PlayerResultEnum.RIGHT_SELECT, key);
+	private onTurnClick = (): void => {}
 
 	private handleSendMessage = async (message: string) => {
 		if (!this.state.game) return;

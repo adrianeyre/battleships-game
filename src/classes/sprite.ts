@@ -15,6 +15,7 @@ import block09 from '../images/block-09.png';
 import block10 from '../images/block-10.png';
 import block11 from '../images/block-11.png';
 import block12 from '../images/block-12.png';
+import block15 from '../images/block-15.png';
 import miss from '../images/block-13.png';
 import hit from '../images/block-14.png';
 import PlayerResultEnum from './enums/player-result-enum';
@@ -35,7 +36,7 @@ export default class Sprite implements ISprite {
 		blank,
 		block01, block02, block03, block04, block05,
 		block06, block07, block08, block09, block10,
-		block11, block12,
+		block11, block12, block15,
 		hit, miss,
 	}
 

@@ -1,4 +1,5 @@
 import MessageActionEnum from '../enums/message-action-enum';
+import PlayerResultEnum from '../../classes/enums/player-result-enum';
 
 export default interface IMessage {
 	dateTime?: number;
@@ -10,4 +11,5 @@ export default interface IMessage {
 	currentUser?: string;
 	x?: number,
 	y?: number,
+	ship?: PlayerResultEnum;
 }
