@@ -6,7 +6,13 @@ import 'react-app-polyfill/stable';
 import BattleShips from './components/battle-ships/battle-ships';
 
 import './index.scss';
-import * as serviceWorker from './serviceWorker';
+import reportWebVitals from './reportWebVitals';
 
-ReactDOM.render(<BattleShips />, document.getElementById('root'));
-serviceWorker.unregister();
+ReactDOM.render(
+    <React.StrictMode>
+        <BattleShips />
+    </React.StrictMode>,
+    document.getElementById('root')
+);
+
+reportWebVitals();
