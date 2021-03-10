@@ -51,7 +51,7 @@
     "@types/socket.io-client": "^1.4.34",
     "@types/uuid": "^3.4.9",
     "dot-prop": "^5.3.0",
-    "elliptic": "^6.5.3",
+    "elliptic": "^6.5.4",
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.5",
     "http-proxy": "^1.18.1",
