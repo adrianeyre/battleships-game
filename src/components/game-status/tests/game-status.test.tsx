@@ -1,4 +1,3 @@
-import React from 'react';
 import { shallow } from 'enzyme';
 
 import GameStatus from '../game-status';
@@ -8,6 +7,8 @@ describe('Info Board', () => {
 	it('Should render correctly', () => {
 		const defaultProps: IGameStatusProps = {
 			messages: [],
+			containerWidth: 1000,
+			spriteWidth: 10,
 			handleSendMessage: jest.fn(),
 		};
 

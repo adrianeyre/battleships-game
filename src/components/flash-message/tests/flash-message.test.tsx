@@ -1,4 +1,3 @@
-import React from 'react';
 import { shallow } from 'enzyme';
 
 import FlashMessage from '../flash-message';
@@ -14,7 +13,8 @@ describe('Info Board', () => {
 				name: 'name',
 				message: 'HELLO',
 				colour: 'black',
-			}
+			},
+			containerHeight: 1000,
 		};
 
 		const flashMessage = shallow(<FlashMessage {...defaultProps} />);

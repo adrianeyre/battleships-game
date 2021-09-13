@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import { FC, useState } from 'react';
 import moment from 'moment';
 
 import IGameStatusProps from './interfaces/game-status-props'

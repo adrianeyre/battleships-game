@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import { FC, useState } from 'react';
 
 import IInfoBoardProps from './interfaces/info-board-props';
 
