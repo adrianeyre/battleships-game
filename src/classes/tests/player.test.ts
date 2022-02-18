@@ -1,4 +1,5 @@
-import uuid from 'uuid';
+// import uuid from 'uuid';
+// import { v4 as uuid } from 'uuid';
 
 import Player from '../player';
 import IPlayerProps from '../interfaces/player-config';
@@ -7,14 +8,15 @@ import Sprite from '../sprite';
 import DirectionEnum from '../enums/direction-enum';
 import PlayerResultEnum from '../enums/player-result-enum';
 
+jest.mock('uuid', () => ({
+	v4: () => 'uuid',
+}));
+
 describe('Player', () => {
 	let defaultConfig: IPlayerProps
 	let player: IPlayer;
 
 	beforeEach(() => {
-		jest.mock('uuid/v4');
-		jest.spyOn(uuid, 'v4').mockReturnValue('uuid')
-
 		defaultConfig = {
 			key: 'player',
 			name: 'name',
