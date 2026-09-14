@@ -1,23 +1,33 @@
-import { shallow } from 'enzyme';
+import { render, screen } from '@testing-library/react';
 
 import FlashMessage from '../flash-message';
 import IFlashMessageProps from '../interfaces/flash-message-props';
 import MessageActionEnum from '../../../services/enums/message-action-enum';
 
-describe('Info Board', () => {
-	it('Should render correctly', () => {
-		const defaultProps: IFlashMessageProps = {
-			message: {
-				action: MessageActionEnum.MESSAGE,
-				id: 'id',
-				name: 'name',
-				message: 'HELLO',
-				colour: 'black',
-			},
-			containerHeight: 1000,
-		};
+describe('Flash Message', () => {
+  const defaultProps: IFlashMessageProps = {
+    message: {
+      action: MessageActionEnum.START_GAME,
+      id: 'id',
+      name: 'name',
+      message: 'The game has started',
+      colour: 'red',
+    },
+    containerHeight: 800,
+  };
 
-		const flashMessage = shallow(<FlashMessage {...defaultProps} />);
-		expect(flashMessage).toMatchSnapshot();
-	});
+  it('Should render the message', () => {
+    render(<FlashMessage {...defaultProps} />);
+
+    expect(screen.getByText('The game has started')).toBeInTheDocument();
+  });
+
+  it('Should colour the message and cap its width to the container', () => {
+    const { container } = render(<FlashMessage {...defaultProps} />);
+
+    expect(container.firstElementChild).toHaveStyle({
+      color: 'rgb(255, 0, 0)',
+      'max-width': '800px',
+    });
+  });
 });
