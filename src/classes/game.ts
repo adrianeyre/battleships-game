@@ -1,222 +1,267 @@
 import IGame from './interfaces/game';
 import PlayerResultEnum from './enums/player-result-enum';
 import ImageEnum from './enums/image-enum';
-import SpriteTypeEnum from './enums/sprite-type-enum'
+import SpriteTypeEnum from './enums/sprite-type-enum';
 import IBattleShipsProps from '../components/battle-ships/interfaces/battle-ships-props';
 import Player from './player';
 import IPlayer from './interfaces/player';
 import IData from '../services/interfaces/data';
 import Data from '../services/data';
 import MessageActionEnum from '../services/enums/message-action-enum';
-import IMessage from 'services/interfaces/message';
+import IMessage from '../services/interfaces/message';
 import ISprite from './interfaces/sprite';
 import Sprite from './sprite';
 
 export default class Game implements IGame {
-	public data: IData;
-	public timer: any
-	public isGameInPlay: boolean;
-	public players: IPlayer[];
-	public flashMessage?: IMessage;
-	public turnSprite: ISprite;
+  public data: IData;
+  public isGameInPlay: boolean;
+  public players: IPlayer[];
+  public flashMessage?: IMessage;
+  public turnSprite: ISprite;
 
-	private playerIndex: number = 0;
-	private opponentIndex: number = 1;
-	private fireX: number;
-	private fireY: number;
-	private messageSending: boolean;
-	private flashMessageTimer?: any;
-	private readonly flashMessageTime: number = 5000;
-	
-	constructor(config: IBattleShipsProps) {
-		const handleData = (message: IMessage) => this.handleData(message);
-		const handleMessageReceived = () => this.messageSending = false;
+  private playerIndex: number = 0;
+  private opponentIndex: number = 1;
+  private fireX: number;
+  private fireY: number;
+  private messageSending: boolean;
+  private flashMessageTimer?: ReturnType<typeof setInterval>;
+  private readonly flashMessageTime: number = 5000;
 
-		this.isGameInPlay = false;
-		this.fireX = -1;
-		this.fireY = -1;
-		this.messageSending = false;
-		this.players = [
-			new Player({ key: 'player', name: config.playerName, y: 1 }),
-			new Player({ key: 'opponent', y: 12 }),
-		];
-		this.turnSprite = new Sprite({
-			key: 'turn-1',
-			visable: false,
-			x: 11,
-			y: 16,
-			xPos: 11,
-			yPos: 16,
-			image: ImageEnum.TURN,
-			type: SpriteTypeEnum.BLANK,
-		});
+  constructor(config: IBattleShipsProps) {
+    const handleData = (message: IMessage) => this.handleData(message);
+    const handleMessageReceived = () => {
+      this.messageSending = false;
+    };
 
-		const player = this.players[this.playerIndex];
-		this.data = new Data({ handleData, handleMessageReceived, id: player.id, name: player.name });
+    this.isGameInPlay = false;
+    this.fireX = -1;
+    this.fireY = -1;
+    this.messageSending = false;
+    this.players = [
+      new Player({ key: 'player', name: config.playerName, y: 1 }),
+      new Player({ key: 'opponent', y: 12 }),
+    ];
+    this.turnSprite = new Sprite({
+      key: 'turn-1',
+      visable: false,
+      x: 11,
+      y: 16,
+      xPos: 11,
+      yPos: 16,
+      image: ImageEnum.TURN,
+      type: SpriteTypeEnum.BLANK,
+    });
 
-		this.data.sendMessage({
-			action: MessageActionEnum.LOGIN,
-			id: this.players[this.playerIndex].id,
-			name: this.players[this.playerIndex].name,
-			colour: '',
-			message: `${ this.players[this.playerIndex].name } has joined the game`,
-		});
-	}
+    const player = this.players[this.playerIndex];
+    this.data = new Data({ handleData, handleMessageReceived, id: player.id, name: player.name });
 
-	public handleInput = (playerResult: PlayerResultEnum, key?: string): void => {
-		switch (playerResult) {
-			case PlayerResultEnum.HOVER:
-				this.updateBlock(key); break;
-			case PlayerResultEnum.SELECT:
-				this.selectBlock(key); break;
-			case PlayerResultEnum.RIGHT_SELECT:
-				this.rotateBlock(key); break;
-			case PlayerResultEnum.DONE_EDITING:
-				this.playerDoneEditing(); break;
-			case PlayerResultEnum.FIRE:
-				this.fire(key); break;
-			case PlayerResultEnum.HIT:
-				this.hit(); break;
-			case PlayerResultEnum.MISS:
-				this.miss(); break;
-			case PlayerResultEnum.DESTROYED:
-				this.destroyed(key); break;
-			case PlayerResultEnum.destroyer:
-			case PlayerResultEnum.submarine:
-			case PlayerResultEnum.cruiser:
-			case PlayerResultEnum.battleship:
-			case PlayerResultEnum.carrier:
-				this.sunk(playerResult, key); break;
-		}
-	}
+    this.data.sendMessage({
+      action: MessageActionEnum.LOGIN,
+      id: player.id,
+      name: player.name,
+      colour: '',
+      message: `${player.name} has joined the game`,
+    });
+  }
 
-	public handleTimer = (): void => {};
+  public handleInput = (playerResult: PlayerResultEnum, key?: string): void => {
+    switch (playerResult) {
+      case PlayerResultEnum.HOVER:
+        this.updateBlock(key);
+        break;
+      case PlayerResultEnum.SELECT:
+        this.selectBlock(key);
+        break;
+      case PlayerResultEnum.RIGHT_SELECT:
+        this.rotateBlock(key);
+        break;
+      case PlayerResultEnum.DONE_EDITING:
+        this.playerDoneEditing();
+        break;
+      case PlayerResultEnum.FIRE:
+        this.fire(key);
+        break;
+      case PlayerResultEnum.HIT:
+        this.hit();
+        break;
+      case PlayerResultEnum.MISS:
+        this.miss();
+        break;
+      case PlayerResultEnum.DESTROYED:
+        this.destroyed();
+        break;
+      case PlayerResultEnum.destroyer:
+      case PlayerResultEnum.submarine:
+      case PlayerResultEnum.cruiser:
+      case PlayerResultEnum.battleship:
+      case PlayerResultEnum.carrier:
+        this.sunk(playerResult);
+        break;
+    }
+  };
 
-	private updateBlock = (key?: string): void => {
-		if (key && this.players[this.playerIndex].edit) this.players[this.playerIndex].updateBlock(key, false);
-	}
+  public handleTimer = (): void => {};
 
-	private selectBlock = (key?: string): void => {
-		if (key && this.players[this.playerIndex].edit) this.handleInput(this.players[this.playerIndex].updateBlock(key, true));
-	}
+  private updateBlock = (key?: string): void => {
+    if (key && this.players[this.playerIndex].edit)
+      this.players[this.playerIndex].updateBlock(key, false);
+  };
 
-	private rotateBlock = (key?: string): void => {
-		if (key && this.players[this.playerIndex].edit) this.players[this.playerIndex].rotate(key);
-	}
+  private selectBlock = (key?: string): void => {
+    if (key && this.players[this.playerIndex].edit)
+      this.handleInput(this.players[this.playerIndex].updateBlock(key, true));
+  };
 
-	private sunk = (playerResult: PlayerResultEnum, key?: string): void => {
-		this.hit();
-		this.sendMessageToService(MessageActionEnum.SUNK, this.players[this.playerIndex], '', undefined, undefined, undefined, playerResult);
-	}
+  private rotateBlock = (key?: string): void => {
+    if (key && this.players[this.playerIndex].edit) this.players[this.playerIndex].rotate(key);
+  };
 
-	private destroyed = (key?: string): void => {
-		this.hit();
-		this.sendMessageToService(MessageActionEnum.DESTROYED, this.players[this.playerIndex], '');
-	}
+  private sunk = (playerResult: PlayerResultEnum): void => {
+    this.hit();
+    this.sendMessageToService(
+      MessageActionEnum.SUNK,
+      this.players[this.playerIndex],
+      '',
+      undefined,
+      undefined,
+      undefined,
+      playerResult,
+    );
+  };
 
-	private fire = (key?: string): void => {
-		if (!key || this.messageSending) return;
+  private destroyed = (): void => {
+    this.hit();
+    this.sendMessageToService(MessageActionEnum.DESTROYED, this.players[this.playerIndex], '');
+  };
 
-		const sprite = this.players[this.opponentIndex].findSpriteByKey(key);
-		if (!sprite) throw Error('No sprite found to fire!');
-		if (!sprite.isImageBlank()) return
+  private fire = (key?: string): void => {
+    if (!key || this.messageSending) return;
 
-		this.fireX = sprite.xPos;
-		this.fireY = sprite.yPos;
-		const player = this.players[this.playerIndex];
-		this.sendMessageToService(MessageActionEnum.FIRE, player, '', player.id, sprite.xPos, sprite.yPos)
-	}
+    const sprite = this.players[this.opponentIndex].findSpriteByKey(key);
+    if (!sprite) throw Error('No sprite found to fire!');
+    if (!sprite.isImageBlank()) return;
 
-	private handleData = (message: IMessage): void => {
-		this.turnSprite.visable = message.id === this.players[this.playerIndex].id;
+    this.fireX = sprite.xPos;
+    this.fireY = sprite.yPos;
+    const player = this.players[this.playerIndex];
+    this.sendMessageToService(
+      MessageActionEnum.FIRE,
+      player,
+      '',
+      player.id,
+      sprite.xPos,
+      sprite.yPos,
+    );
+  };
 
-		switch (message.action) {
-			case MessageActionEnum.GAME_OVER:
-				return this.gameOver(message);
-			case MessageActionEnum.LOGOUT:
-				return this.logout();
-			case MessageActionEnum.SUNK:
-			case MessageActionEnum.START_GAME:
-				return this.setFlashMessage(message);
-		}
+  private handleData = (message: IMessage): void => {
+    this.turnSprite.visable = message.id === this.players[this.playerIndex].id;
 
-		if (!message.currentUser) throw new Error('No X, Y or Current User set!');
+    switch (message.action) {
+      case MessageActionEnum.GAME_OVER:
+        return this.gameOver(message);
+      case MessageActionEnum.LOGOUT:
+        return this.logout();
+      case MessageActionEnum.SUNK:
+      case MessageActionEnum.START_GAME:
+        return this.setFlashMessage(message);
+    }
 
-		const currentUser = message.currentUser === this.players[this.playerIndex].id;
-		const playerReceiving = this.players.find((p: IPlayer) => p.id !== message.currentUser);
+    if (!message.currentUser) throw new Error('No X, Y or Current User set!');
 
-		if (!playerReceiving) throw Error('playerRequesting or playerReceiving not found!');
+    const currentUser = message.currentUser === this.players[this.playerIndex].id;
+    const playerReceiving = this.players.find((p: IPlayer) => p.id !== message.currentUser);
 
-		switch (message.action) {
-			case MessageActionEnum.FIRE:
-				return this.handleFire(playerReceiving, message, currentUser);
-			case MessageActionEnum.HIT:
-				return this.handleHit(message, currentUser, playerReceiving);
-			case MessageActionEnum.MISS:
-				return this.handleMiss(message, currentUser, playerReceiving);
-		}
-	}
+    if (!playerReceiving) throw Error('playerRequesting or playerReceiving not found!');
 
-	private handleFire = (player: IPlayer, message: IMessage, currentUser: boolean): void => {
-		if (currentUser) return;
-		if (!message.x || !message.y) throw new Error('No X, Y or Current User set!');
+    switch (message.action) {
+      case MessageActionEnum.FIRE:
+        return this.handleFire(playerReceiving, message, currentUser);
+      case MessageActionEnum.HIT:
+        return this.handleHit(currentUser, playerReceiving);
+      case MessageActionEnum.MISS:
+        return this.handleMiss(currentUser, playerReceiving);
+    }
+  };
 
-		this.handleInput(player.fire(message.x, message.y));
-	}
+  private handleFire = (player: IPlayer, message: IMessage, currentUser: boolean): void => {
+    if (currentUser) return;
+    if (!message.x || !message.y) throw new Error('No X, Y or Current User set!');
 
-	private handleHit = (message: IMessage, currentUser: boolean, player?: IPlayer): void => {
-		if (!currentUser) return;
-		if (!player || this.fireX < 1 || this.fireY < 1) throw new Error('No Player or fireX or fireY not set!');
-		
-		player.hit(this.fireX, this.fireY);
-	}
+    this.handleInput(player.fire(message.x, message.y));
+  };
 
-	private handleMiss = (message: IMessage, currentUser: boolean, player?: IPlayer): void => {
-		if (!currentUser) return;
-		if (!player || this.fireX < 1 || this.fireY < 1) throw new Error('No Player or fireX or fireY not set!');
-		
-		player.miss(this.fireX, this.fireY);
-	}
+  private handleHit = (currentUser: boolean, player?: IPlayer): void => {
+    if (!currentUser) return;
+    if (!player || this.fireX < 1 || this.fireY < 1)
+      throw new Error('No Player or fireX or fireY not set!');
 
-	private gameOver = (message: IMessage) => {
-		this.setFlashMessage(message);
-		this.players[this.playerIndex].reset();
-		this.players[this.opponentIndex].reset();
-	}
+    player.hit(this.fireX, this.fireY);
+  };
 
-	private logout = (): void => {
-		this.isGameInPlay = false;
-	}
+  private handleMiss = (currentUser: boolean, player?: IPlayer): void => {
+    if (!currentUser) return;
+    if (!player || this.fireX < 1 || this.fireY < 1)
+      throw new Error('No Player or fireX or fireY not set!');
 
-	private hit = (): void => this.sendMessageToService(MessageActionEnum.HIT, this.players[this.playerIndex], '');
-	private miss = (): void => this.sendMessageToService(MessageActionEnum.MISS, this.players[this.playerIndex], '');
-	private playerDoneEditing = (): void => this.sendMessageToService(MessageActionEnum.SETUP_COMPLETE, this.players[this.playerIndex], '')
-	public sendMessage = (message: string): void => this.sendMessageToService(MessageActionEnum.MESSAGE, this.players[this.playerIndex], `[${ this.players[this.playerIndex].name }] ${ message }`);
+    player.miss(this.fireX, this.fireY);
+  };
 
-	private sendMessageToService = (action: MessageActionEnum, player: IPlayer, message: string, currentUser?: string, x?: number, y?: number, ship?: PlayerResultEnum): void => {
-		this.messageSending = true;
-		this.data.sendMessage({
-			action,
-			id: player.id,
-			name: player.name,
-			message,
-			colour: '',
-			currentUser,
-			x,
-			y,
-			ship,
-		});
-	}
+  private gameOver = (message: IMessage) => {
+    this.setFlashMessage(message);
+    this.players[this.playerIndex].reset();
+    this.players[this.opponentIndex].reset();
+  };
 
-	private setFlashMessage = (message: IMessage): void => {
-		this.flashMessage = message;
+  private logout = (): void => {
+    this.isGameInPlay = false;
+  };
 
-		this.flashMessageTimer = setInterval(this.unsetFlashMessage, this.flashMessageTime);
-	}
-	
-	private unsetFlashMessage = (): void => {
-		this.flashMessage = undefined;
+  private hit = (): void =>
+    this.sendMessageToService(MessageActionEnum.HIT, this.players[this.playerIndex], '');
+  private miss = (): void =>
+    this.sendMessageToService(MessageActionEnum.MISS, this.players[this.playerIndex], '');
+  private playerDoneEditing = (): void =>
+    this.sendMessageToService(MessageActionEnum.SETUP_COMPLETE, this.players[this.playerIndex], '');
+  public sendMessage = (message: string): void =>
+    this.sendMessageToService(
+      MessageActionEnum.MESSAGE,
+      this.players[this.playerIndex],
+      `[${this.players[this.playerIndex].name}] ${message}`,
+    );
 
-		clearInterval(this.flashMessageTimer);
-	}
+  private sendMessageToService = (
+    action: MessageActionEnum,
+    player: IPlayer,
+    message: string,
+    currentUser?: string,
+    x?: number,
+    y?: number,
+    ship?: PlayerResultEnum,
+  ): void => {
+    this.messageSending = true;
+    this.data.sendMessage({
+      action,
+      id: player.id,
+      name: player.name,
+      message,
+      colour: '',
+      currentUser,
+      x,
+      y,
+      ship,
+    });
+  };
+
+  private setFlashMessage = (message: IMessage): void => {
+    this.flashMessage = message;
+
+    this.flashMessageTimer = setInterval(this.unsetFlashMessage, this.flashMessageTime);
+  };
+
+  private unsetFlashMessage = (): void => {
+    this.flashMessage = undefined;
+
+    clearInterval(this.flashMessageTimer);
+  };
 }

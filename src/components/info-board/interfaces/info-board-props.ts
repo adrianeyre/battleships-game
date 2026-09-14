@@ -1,4 +1,4 @@
 export default interface IInfoBoardProps {
-	containerHeight: number;
-	startGame(playerName?: string): void;
+  containerHeight: number;
+  startGame(playerName?: string): void;
 }

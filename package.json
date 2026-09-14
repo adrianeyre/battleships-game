@@ -1,51 +1,45 @@
 {
   "name": "battle-ships",
-  "version": "0.3.0",
+  "version": "1.0.0",
   "private": true,
+  "description": "Battle Ships — a browser Battleships game written in TypeScript and React",
+  "keywords": [
+    "battleships",
+    "battle-ships",
+    "game",
+    "react",
+    "typescript",
+    "vite"
+  ],
+  "license": "MIT",
   "author": "Adrian Eyre",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/adrianeyre/battleships-game.git"
+    "url": "https://github.com/adrianeyre/battleships-game.git"
+  },
+  "bugs": {
+    "url": "https://github.com/adrianeyre/battleships-game/issues"
+  },
+  "homepage": "https://adrianeyre.github.io/battleships-game/",
+  "type": "module",
+  "engines": {
+    "node": ">=26"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
-  },
-  "dependencies": {
-    "lodash": "^4.17.21",
-    "moment": "^2.29.3",
-    "react": "^18.1.0",
-    "react-dom": "^18.1.0",
-    "react-scripts": "^5.0.1",
-    "socket.io-client": "^4.5.0",
-    "typescript": "^4.6.4",
-    "uuid": "^8.3.2",
-    "web-vitals": "^2.1.4"
-  },
-  "devDependencies": {
-    "@testing-library/jest-dom": "^5.16.4",
-    "@testing-library/react": "^13.2.0",
-    "@testing-library/user-event": "^14.1.1",
-    "@types/enzyme": "^3.10.12",
-    "@types/enzyme-adapter-react-16": "^1.0.6",
-    "@types/jest": "^27.5.0",
-    "@types/lodash": "^4.14.182",
-    "@types/moment": "^2.13.0",
-    "@types/node": "^17.0.32",
-    "@types/react": "^18.0.9",
-    "@types/react-dom": "^18.0.3",
-    "@types/socket.io-client": "^3.0.0",
-    "@types/uuid": "^8.3.4",
-    "enzyme": "^3.11.0",
-    "enzyme-adapter-react-16": "^1.15.6",
-    "jest": "^28.1.0",
-    "jest-watch-typeahead": "^1.1.0",
-    "node-sass": "^7.0.1"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
+    "start": "vite",
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "serve": "vite preview --host --port 4173",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write \"src/**/*.{ts,tsx,scss,css}\" \"*.{ts,js,json,html,md}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,scss,css}\" \"*.{ts,js,json,html,md}\"",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "semantic-release": "semantic-release"
   },
   "browserslist": {
     "production": [
@@ -58,5 +52,44 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "dependencies": {
+    "moment": "^2.30.1",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "socket.io-client": "^4.8.3",
+    "uuid": "^14.0.2",
+    "web-vitals": "^6.2.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@semantic-release/changelog": "^7.0.0",
+    "@semantic-release/commit-analyzer": "^13.0.1",
+    "@semantic-release/git": "^11.0.1",
+    "@semantic-release/github": "^12.0.9",
+    "@semantic-release/npm": "^13.1.5",
+    "@semantic-release/release-notes-generator": "^14.1.1",
+    "@testing-library/dom": "^10.4.2",
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14.6.7",
+    "@types/node": "^26.5.1",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.1",
+    "@vitest/coverage-v8": "^5.0.0",
+    "conventional-changelog-conventionalcommits": "^10.4.0",
+    "eslint": "^10.10.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.7",
+    "globals": "^17.12.0",
+    "jsdom": "^30.0.1",
+    "prettier": "^3.9.6",
+    "sass": "^1.104.1",
+    "semantic-release": "^25.0.9",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.70.0",
+    "vite": "^8.3.0",
+    "vitest": "^5.0.0"
   }
 }
